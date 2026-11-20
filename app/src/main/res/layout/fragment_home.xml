@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="20dp"
             android:paddingTop="12dp"
             android:paddingBottom="24dp">
 
@@ -260,7 +260,7 @@
                 <!-- Row 1: Ngày công & Giờ tăng ca -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="66dp"
                     android:orientation="horizontal">
 
                     <!-- Ngày công -->
@@ -270,9 +270,10 @@
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="14dp"
                         app:cardElevation="1dp"
-                        app:strokeWidth="0dp">
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -323,9 +324,10 @@
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="14dp"
                         app:cardElevation="1dp"
-                        app:strokeWidth="0dp">
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -373,7 +375,7 @@
                 <!-- Row 2: Phép còn lại & Đi muộn -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="64dp"
+                    android:layout_height="66dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
@@ -384,9 +386,10 @@
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="14dp"
                         app:cardElevation="1dp"
-                        app:strokeWidth="0dp">
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -437,9 +440,10 @@
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="14dp"
                         app:cardElevation="1dp"
-                        app:strokeWidth="0dp">
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -678,9 +682,10 @@
                 android:layout_marginTop="10dp"
                 android:visibility="gone"
                 app:cardBackgroundColor="@color/card_bg"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="14dp"
                 app:cardElevation="1dp"
-                app:strokeWidth="0dp">
+                app:strokeColor="#E2E8F0"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
