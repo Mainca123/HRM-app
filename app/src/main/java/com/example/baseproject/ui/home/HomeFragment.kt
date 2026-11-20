@@ -26,6 +26,8 @@ import com.example.baseproject.databinding.FragmentHomeBinding
 import com.example.baseproject.ui.forms.CreateExplanationActivity
 import com.example.baseproject.ui.forms.CreateLeaveActivity
 import com.example.baseproject.ui.forms.CreateOvertimeActivity
+import com.example.baseproject.ui.management.ApprovalActivity
+import com.example.baseproject.ui.management.DepartmentStatsActivity
 import com.example.baseproject.ui.requests.LeaveRequestAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -245,7 +247,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 tvTitle.text = "Chức năng quản trị"
                 tvSubtitle.text = "Admin · Toàn công ty"
                 itemApprove.visibility = View.VISIBLE
-                itemDeptStats.visibility = View.GONE
+                itemDeptStats.visibility = View.VISIBLE
                 itemHrOverview.visibility = View.VISIBLE
                 itemHrReports.visibility = View.VISIBLE
                 itemSystemAdmin.visibility = View.VISIBLE
@@ -273,19 +275,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         btnClose.setOnClickListener { dialog.dismiss() }
 
-        // Action 1: Duyệt đơn -> Navigate to Requests tab and select "Duyệt đơn" (tab 3)
+        // Action 1: Duyệt đơn -> Navigate to ApprovalActivity
         itemApprove.setOnClickListener {
             dialog.dismiss()
-            (activity as? MainActivity)?.switchToTab(R.id.nav_requests, 3)
+            startActivity(Intent(requireContext(), ApprovalActivity::class.java))
         }
 
-        // Action 2: Thống kê phòng ban
+        // Action 2: Thống kê phòng ban -> Navigate to DepartmentStatsActivity
         itemDeptStats.setOnClickListener {
             dialog.dismiss()
-            showFeatureDialog(
-                "Thống kê phòng ban",
-                "Tình hình phòng $dept:\n• Tổng nhân sự: 12 người\n• Đi làm đúng giờ: 11 người\n• Đi muộn: 1 người (15 phút)\n• Đang nghỉ phép: 0 người"
-            )
+            val intent = Intent(requireContext(), DepartmentStatsActivity::class.java).apply {
+                putExtra("DEPT_NAME", dept)
+            }
+            startActivity(intent)
         }
 
         // Action 3: Tổng quan nhân sự
