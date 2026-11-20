@@ -8,7 +8,7 @@
     <item
         android:id="@+id/nav_history"
         android:icon="@drawable/ic_history"
-        android:title="Lịch sử" />
+        android:title="Lịch sử công" />
 
     <item
         android:id="@+id/nav_requests"

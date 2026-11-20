@@ -29,6 +29,7 @@ import com.example.baseproject.ui.forms.CreateOvertimeActivity
 import com.example.baseproject.ui.management.ApprovalActivity
 import com.example.baseproject.ui.management.DepartmentStatsActivity
 import com.example.baseproject.ui.requests.LeaveRequestAdapter
+import com.example.baseproject.ui.timesheet.TimesheetActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -95,9 +96,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             startActivity(Intent(requireContext(), CreateExplanationActivity::class.java))
         }
 
-        // Quick action 4: Bảng công -> Switch to History/Timesheet tab
+        // Quick action 4: Bảng công -> Open TimesheetActivity (14 · Bảng công tháng)
         viewBinding.actionTimesheet.setOnClickListener {
-            (activity as? com.example.baseproject.MainActivity)?.switchToTab(R.id.nav_history)
+            startActivity(Intent(requireContext(), TimesheetActivity::class.java))
         }
 
         viewBinding.tvViewAllRequests.setOnClickListener {
