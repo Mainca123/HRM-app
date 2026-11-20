@@ -30,7 +30,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
         super.initViews()
         lifecycleScope.launch {
             delay(1500)
-            if (spManager.isLanguageChosen()) {
+            if (spManager.isLoggedIn()) {
+                // User is already authenticated -> go directly to Main
+                startActivity(Intent(this@SplashActivity, com.example.baseproject.MainActivity::class.java))
+            } else if (spManager.isLanguageChosen()) {
                 // Subsequent launches: skip Language & Onboarding -> Login
                 startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             } else {
