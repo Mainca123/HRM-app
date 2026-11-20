@@ -158,6 +158,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.9")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.github.wdsqjq:AndRatingBar:1.0.6") {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
     }

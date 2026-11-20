@@ -49,3 +49,11 @@ data class UserProfile(
     @SerializedName("role")
     val role: String? = null
 )
+
+data class ChangePasswordRequest(
+    @SerializedName("currentPassword")
+    val currentPassword: String,
+
+    @SerializedName("newPassword")
+    val newPassword: String
+)

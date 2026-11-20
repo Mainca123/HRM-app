@@ -1,33 +1,80 @@
 package com.example.baseproject
 
+import androidx.fragment.app.Fragment
 import com.example.baseproject.base.activity.BaseActivity
 import com.example.baseproject.databinding.ActivityMainBinding
+import com.example.baseproject.ui.history.HistoryFragment
+import com.example.baseproject.ui.home.HomeFragment
+import com.example.baseproject.ui.profile.ProfileFragment
+import com.example.baseproject.ui.requests.RequestsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * Main Dashboard Activity after successful login.
- * Conforms to coding convention handbook (separated initViews, initListeners, initObserver).
+ * Main Screen hosting the primary HRM navigation tabs.
  */
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
+
+    private val homeFragment by lazy { HomeFragment() }
+    private val historyFragment by lazy { HistoryFragment() }
+    private val requestsFragment by lazy { RequestsFragment() }
+    private val profileFragment by lazy { ProfileFragment() }
+
+    private var activeFragment: Fragment = homeFragment
 
     override fun provideViewBinding(): ActivityMainBinding =
         ActivityMainBinding.inflate(layoutInflater)
 
     override fun initViews() {
         super.initViews()
+
+        // Setup fragment container with HomeFragment initially
+        supportFragmentManager.beginTransaction()
+            .add(R.id.navHostFragment, homeFragment, "HOME")
+            .commit()
+
         initListeners()
     }
 
     private fun initListeners() {
-        // TODO: Initialize click listeners and view interactions here
+        viewBinding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    switchFragment(homeFragment, "HOME")
+                    true
+                }
+                R.id.nav_history -> {
+                    switchFragment(historyFragment, "HISTORY")
+                    true
+                }
+                R.id.nav_requests -> {
+                    switchFragment(requestsFragment, "REQUESTS")
+                    true
+                }
+                R.id.nav_profile -> {
+                    switchFragment(profileFragment, "PROFILE")
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
-    override fun initData() {
-        super.initData()
-        // TODO: Load main dashboard data here
+    private fun switchFragment(targetFragment: Fragment, tag: String) {
+        if (activeFragment == targetFragment) return
+
+        val transaction = supportFragmentManager.beginTransaction()
+        val existingFragment = supportFragmentManager.findFragmentByTag(tag)
+
+        if (existingFragment == null) {
+            transaction.add(R.id.navHostFragment, targetFragment, tag)
+        }
+
+        transaction.hide(activeFragment).show(targetFragment).commit()
+        activeFragment = targetFragment
     }
 
-    override fun initObserver() {
-        super.initObserver()
-        // TODO: Observe ViewModel live data or flows here
+    fun switchToTab(menuItemId: Int) {
+        viewBinding.bottomNavigation.selectedItemId = menuItemId
     }
 }

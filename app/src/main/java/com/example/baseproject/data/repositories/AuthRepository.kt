@@ -88,4 +88,17 @@ class AuthRepository @Inject constructor(
     fun getUserProfile(): UserProfile? = spManager.getUserProfile()
 
     fun isLoggedIn(): Boolean = spManager.isLoggedIn()
+
+    suspend fun changePassword(currentPass: String, newPass: String): Resource<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.changePassword(com.example.baseproject.data.model.auth.ChangePasswordRequest(currentPass, newPass))
+            if (response.isSuccessful && response.body()?.success == true) {
+                Resource.Success(true)
+            } else {
+                Resource.Error(response.body()?.message ?: "Đổi mật khẩu thất bại")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
+        }
+    }
 }
