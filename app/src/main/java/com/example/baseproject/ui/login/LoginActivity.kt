@@ -26,6 +26,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun initViews() {
         super.initViews()
+        applySystemBarInsets(viewBinding.root)
         initListeners()
     }
 

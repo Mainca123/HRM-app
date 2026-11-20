@@ -29,6 +29,7 @@ class CreateExplanationActivity : BaseActivity<ActivityCreateExplanationBinding>
 
     override fun initViews() {
         super.initViews()
+        applySystemBarInsets(viewBinding.root)
 
         viewBinding.etWorkingDay.setText(dateFormat.format(calendar.time))
         initListeners()

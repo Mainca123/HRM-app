@@ -99,6 +99,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewBinding.btnNotification.setOnClickListener {
             Toast.makeText(requireContext(), "Bạn có 2 thông báo mới về ca làm việc và đơn nghỉ.", Toast.LENGTH_SHORT).show()
         }
+
+        viewBinding.btnEmptyCreateLeave.setOnClickListener {
+            startActivity(Intent(requireContext(), CreateLeaveActivity::class.java))
+        }
     }
 
     override fun initObserver() {
@@ -192,7 +196,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewBinding.tvLateMinutes.text = "${d.lateMinutesThisMonth} phút"
 
         // Recent leave requests
-        leaveAdapter.submitList(d.recentLeaveRequests)
+        val requests = d.recentLeaveRequests
+        if (requests.isNullOrEmpty()) {
+            viewBinding.rvRecentRequests.visibility = View.GONE
+            viewBinding.layoutEmptyRequests.visibility = View.VISIBLE
+        } else {
+            viewBinding.rvRecentRequests.visibility = View.VISIBLE
+            viewBinding.layoutEmptyRequests.visibility = View.GONE
+            leaveAdapter.submitList(requests)
+        }
     }
 
     override fun onResume() {

@@ -36,6 +36,7 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
 
     override fun initViews() {
         super.initViews()
+        applySystemBarInsets(viewBinding.root)
 
         val todayStr = dateFormat.format(calendar.time)
         viewBinding.etFromDate.setText(todayStr)

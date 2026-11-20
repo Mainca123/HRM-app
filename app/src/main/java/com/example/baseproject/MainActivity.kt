@@ -1,5 +1,8 @@
 package com.example.baseproject
 
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import com.example.baseproject.base.activity.BaseActivity
 import com.example.baseproject.databinding.ActivityMainBinding
@@ -27,6 +30,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun initViews() {
         super.initViews()
+
+        // Handle Window Insets for edge-to-edge display (Safe Area for camera punch-hole and gesture bar)
+        ViewCompat.setOnApplyWindowInsetsListener(viewBinding.mainLayout) { _, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+
+            val topInset = maxOf(statusBar.top, displayCutout.top)
+            viewBinding.navHostFragment.updatePadding(top = topInset)
+            viewBinding.bottomNavigation.updatePadding(bottom = navBar.bottom)
+            insets
+        }
 
         // Setup fragment container with HomeFragment initially
         supportFragmentManager.beginTransaction()

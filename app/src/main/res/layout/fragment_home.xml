@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="20dp"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="12dp"
             android:paddingBottom="24dp">
 
             <!-- Top Header: User Profile & Bell -->
@@ -49,6 +49,8 @@
                         android:id="@+id/tvGreetingName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="Xin chào, Nhân viên"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
@@ -59,6 +61,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="NV001 · Phòng Kỹ thuật"
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
@@ -67,8 +71,8 @@
                 <!-- Notification Bell -->
                 <FrameLayout
                     android:id="@+id/btnNotification"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
                     android:background="@drawable/bg_badge_circle_normal"
                     android:clickable="true"
                     android:focusable="true">
@@ -84,8 +88,8 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:layout_gravity="top|end"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginEnd="2dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginEnd="3dp"
                         android:background="@drawable/bg_badge_circle"
                         android:gravity="center"
                         android:text="2"
@@ -99,16 +103,17 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="14dp"
                 app:cardBackgroundColor="@color/primary_blue"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="3dp">
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="18dp">
+                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -121,16 +126,19 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:textColor="@color/primary_blue_light"
-                            android:textSize="13sp"
+                            android:textColor="#DBEAFE"
+                            android:textSize="12sp"
                             tools:text="Thứ Sáu, 20/11/2026" />
 
                         <TextView
                             android:id="@+id/tvShiftName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/bg_shift_tag"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="4dp"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             tools:text="Ca HC: 08:00 - 17:00" />
                     </LinearLayout>
@@ -140,17 +148,19 @@
                         android:id="@+id/tvRealtimeClock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="12dp"
+                        android:letterSpacing="0.05"
                         android:textColor="@color/white"
-                        android:textSize="36sp"
+                        android:textSize="34sp"
                         android:textStyle="bold"
                         tools:text="08:30:15" />
 
-                    <!-- Giờ vào & Giờ ra Boxes -->
+                    <!-- Giờ vào / Giờ ra Grid -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -158,8 +168,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="6dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_btn_primary"
-                            android:backgroundTint="#3B57B8"
+                            android:background="@drawable/bg_time_box"
                             android:orientation="vertical"
                             android:padding="10dp">
 
@@ -167,8 +176,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Giờ vào"
-                                android:textColor="@color/primary_blue_light"
-                                android:textSize="12sp" />
+                                android:textColor="#BFDBFE"
+                                android:textSize="11sp" />
 
                             <TextView
                                 android:id="@+id/tvTimeIn"
@@ -176,7 +185,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:textColor="#BBF7D0"
-                                android:textSize="16sp"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
                                 tools:text="07:55:12" />
                         </LinearLayout>
@@ -186,8 +195,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="6dp"
                             android:layout_weight="1"
-                            android:background="@drawable/bg_btn_primary"
-                            android:backgroundTint="#3B57B8"
+                            android:background="@drawable/bg_time_box"
                             android:orientation="vertical"
                             android:padding="10dp">
 
@@ -195,8 +203,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Giờ ra"
-                                android:textColor="@color/primary_blue_light"
-                                android:textSize="12sp" />
+                                android:textColor="#BFDBFE"
+                                android:textSize="11sp" />
 
                             <TextView
                                 android:id="@+id/tvTimeOut"
@@ -204,7 +212,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
                                 android:textColor="@color/white"
-                                android:textSize="16sp"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
                                 tools:text="--:--:--" />
                         </LinearLayout>
@@ -228,7 +236,7 @@
                             android:layout_gravity="center"
                             android:text="VÀO CA (CHECK-IN)"
                             android:textColor="@color/white"
-                            android:textSize="15sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <ProgressBar
@@ -242,22 +250,23 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Metrics Grid (2x2 Cards) -->
+            <!-- Metrics Grid (2x2 Cards with equal height) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="14dp"
                 android:orientation="vertical">
 
+                <!-- Row 1: Ngày công & Giờ tăng ca -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
                     android:orientation="horizontal">
 
                     <!-- Ngày công -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
@@ -267,10 +276,10 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
-                            android:padding="12dp">
+                            android:paddingHorizontal="12dp">
 
                             <ImageView
                                 android:layout_width="24dp"
@@ -278,24 +287,29 @@
                                 android:src="@drawable/ic_calendar" />
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
+                                android:layout_weight="1"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:text="Ngày công"
                                     android:textColor="@color/text_secondary"
-                                    android:textSize="12sp" />
+                                    android:textSize="11sp" />
 
                                 <TextView
                                     android:id="@+id/tvWorkDays"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:textColor="@color/text_primary"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
                                     tools:text="21.5 / 22" />
                             </LinearLayout>
@@ -305,7 +319,7 @@
                     <!-- Giờ tăng ca -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
@@ -315,10 +329,10 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
-                            android:padding="12dp">
+                            android:paddingHorizontal="12dp">
 
                             <ImageView
                                 android:layout_width="24dp"
@@ -326,41 +340,47 @@
                                 android:src="@drawable/ic_ot" />
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
+                                android:layout_weight="1"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:text="Giờ tăng ca"
                                     android:textColor="@color/text_secondary"
-                                    android:textSize="12sp" />
+                                    android:textSize="11sp" />
 
                                 <TextView
                                     android:id="@+id/tvOvertimeHours"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:textColor="@color/text_primary"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
-                                    tools:text="8.5 giờ" />
+                                    tools:text="4.5 giờ" />
                             </LinearLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
+                <!-- Row 2: Phép còn lại & Đi muộn -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
                     <!-- Phép còn lại -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
@@ -370,10 +390,10 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
-                            android:padding="12dp">
+                            android:paddingHorizontal="12dp">
 
                             <ImageView
                                 android:layout_width="24dp"
@@ -381,24 +401,29 @@
                                 android:src="@drawable/ic_leave" />
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
+                                android:layout_weight="1"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:text="Phép còn lại"
                                     android:textColor="@color/text_secondary"
-                                    android:textSize="12sp" />
+                                    android:textSize="11sp" />
 
                                 <TextView
                                     android:id="@+id/tvLeaveBalance"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:textColor="@color/text_primary"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
                                     tools:text="11.0 ngày" />
                             </LinearLayout>
@@ -408,7 +433,7 @@
                     <!-- Đi muộn -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
                         app:cardBackgroundColor="@color/card_bg"
@@ -418,10 +443,10 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
-                            android:padding="12dp">
+                            android:paddingHorizontal="12dp">
 
                             <ImageView
                                 android:layout_width="24dp"
@@ -429,24 +454,29 @@
                                 android:src="@drawable/ic_warning" />
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
+                                android:layout_weight="1"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:text="Đi muộn"
                                     android:textColor="@color/text_secondary"
-                                    android:textSize="12sp" />
+                                    android:textSize="11sp" />
 
                                 <TextView
                                     android:id="@+id/tvLateMinutes"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
                                     android:textColor="@color/text_primary"
-                                    android:textSize="16sp"
+                                    android:textSize="15sp"
                                     android:textStyle="bold"
                                     tools:text="15 phút" />
                             </LinearLayout>
@@ -459,7 +489,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="18dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -475,8 +505,8 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/bg_badge_circle"
                         android:backgroundTint="#EFF6FF">
 
@@ -509,8 +539,8 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/bg_badge_circle"
                         android:backgroundTint="#EFF6FF">
 
@@ -543,8 +573,8 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/bg_badge_circle"
                         android:backgroundTint="#EFF6FF">
 
@@ -577,8 +607,8 @@
                     android:orientation="vertical">
 
                     <FrameLayout
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/bg_badge_circle"
                         android:backgroundTint="#EFF6FF">
 
@@ -604,7 +634,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="22dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -639,6 +669,57 @@
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="2"
                 tools:listitem="@layout/item_leave_request" />
+
+            <!-- Clean Empty State Container when no recent requests exist -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/layoutEmptyRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="1dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:alpha="0.4"
+                        android:src="@drawable/ic_leave" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Chưa có đơn nghỉ nào gần đây"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/btnEmptyCreateLeave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_btn_primary"
+                        android:backgroundTint="#EFF6FF"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:text="+ Tạo đơn xin nghỉ"
+                        android:textColor="@color/primary_blue"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>

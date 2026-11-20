@@ -32,6 +32,7 @@ class CreateOvertimeActivity : BaseActivity<ActivityCreateOvertimeBinding>() {
 
     override fun initViews() {
         super.initViews()
+        applySystemBarInsets(viewBinding.root)
 
         viewBinding.etWorkDate.setText(dateFormat.format(calendar.time))
         viewBinding.etStartTime.setText("17:30")

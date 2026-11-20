@@ -2,10 +2,13 @@ package com.example.baseproject.base.activity
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
 
 /**
@@ -42,6 +45,18 @@ abstract class BaseActivity<V : ViewBinding> : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+    }
+
+    fun applySystemBarInsets(rootView: View, applyTop: Boolean = true, applyBottom: Boolean = true) {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            val topInset = if (applyTop) maxOf(statusBar.top, displayCutout.top) else 0
+            val bottomInset = if (applyBottom) navBar.bottom else 0
+            v.setPadding(v.paddingLeft, topInset, v.paddingRight, bottomInset)
+            insets
+        }
     }
 
     abstract fun provideViewBinding(): V
