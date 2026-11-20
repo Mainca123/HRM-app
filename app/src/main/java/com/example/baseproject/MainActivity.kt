@@ -89,7 +89,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         activeFragment = targetFragment
     }
 
-    fun switchToTab(menuItemId: Int) {
+    fun switchToTab(menuItemId: Int, subTabIndex: Int? = null) {
         viewBinding.bottomNavigation.selectedItemId = menuItemId
+        if (subTabIndex != null && menuItemId == R.id.nav_requests) {
+            requestsFragment.selectSubTab(subTabIndex)
+        }
     }
 }

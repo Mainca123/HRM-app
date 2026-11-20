@@ -97,6 +97,23 @@
                         android:textSize="10sp"
                         android:textStyle="bold" />
                 </FrameLayout>
+
+                <!-- Role Management Menu Button (4 small squares) -->
+                <FrameLayout
+                    android:id="@+id/btnRoleMenu"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_badge_circle_normal"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_grid" />
+                </FrameLayout>
             </LinearLayout>
 
             <!-- Card Ca làm việc & Check-in / Check-out (Blue Card) -->

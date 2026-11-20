@@ -1,18 +1,24 @@
 package com.example.baseproject.ui.home
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.baseproject.MainActivity
 import com.example.baseproject.R
 import com.example.baseproject.base.fragment.BaseFragment
 import com.example.baseproject.data.model.dashboard.EmployeeDashboardDto
@@ -98,6 +104,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewBinding.btnNotification.setOnClickListener {
             Toast.makeText(requireContext(), "Bạn có 2 thông báo mới về ca làm việc và đơn nghỉ.", Toast.LENGTH_SHORT).show()
+        }
+
+        viewBinding.btnRoleMenu.setOnClickListener {
+            val user = viewModel.uiState.value.currentUser
+            val dept = viewModel.uiState.value.dashboard?.departmentName
+            showRoleMenuDialog(user?.role, dept)
         }
 
         viewBinding.btnEmptyCreateLeave.setOnClickListener {
@@ -205,6 +217,110 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewBinding.layoutEmptyRequests.visibility = View.GONE
             leaveAdapter.submitList(requests)
         }
+    }
+
+    private fun showRoleMenuDialog(role: String?, department: String?) {
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_role_menu, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvRoleMenuTitle)
+        val tvSubtitle = dialogView.findViewById<TextView>(R.id.tvRoleMenuSubtitle)
+        val btnClose = dialogView.findViewById<ImageView>(R.id.btnCloseRoleMenu)
+
+        val itemApprove = dialogView.findViewById<View>(R.id.itemApprove)
+        val itemDeptStats = dialogView.findViewById<View>(R.id.itemDeptStats)
+        val itemHrOverview = dialogView.findViewById<View>(R.id.itemHrOverview)
+        val itemHrReports = dialogView.findViewById<View>(R.id.itemHrReports)
+        val itemSystemAdmin = dialogView.findViewById<View>(R.id.itemSystemAdmin)
+
+        val userRole = (role ?: "Quản lý").uppercase()
+        val dept = department ?: "Phòng Kỹ thuật"
+
+        when {
+            userRole.contains("ADMIN") -> {
+                tvTitle.text = "Chức năng quản trị"
+                tvSubtitle.text = "Admin · Toàn công ty"
+                itemApprove.visibility = View.VISIBLE
+                itemDeptStats.visibility = View.GONE
+                itemHrOverview.visibility = View.VISIBLE
+                itemHrReports.visibility = View.VISIBLE
+                itemSystemAdmin.visibility = View.VISIBLE
+            }
+            userRole.contains("HR") -> {
+                tvTitle.text = "Chức năng quản lý"
+                tvSubtitle.text = "HR · Toàn công ty"
+                itemApprove.visibility = View.VISIBLE
+                itemDeptStats.visibility = View.GONE
+                itemHrOverview.visibility = View.VISIBLE
+                itemHrReports.visibility = View.VISIBLE
+                itemSystemAdmin.visibility = View.GONE
+            }
+            else -> {
+                // Manager / Quản lý
+                tvTitle.text = "Chức năng quản lý"
+                tvSubtitle.text = "Quản lý · $dept"
+                itemApprove.visibility = View.VISIBLE
+                itemDeptStats.visibility = View.VISIBLE
+                itemHrOverview.visibility = View.GONE
+                itemHrReports.visibility = View.GONE
+                itemSystemAdmin.visibility = View.GONE
+            }
+        }
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+
+        // Action 1: Duyệt đơn -> Navigate to Requests tab and select "Duyệt đơn" (tab 3)
+        itemApprove.setOnClickListener {
+            dialog.dismiss()
+            (activity as? MainActivity)?.switchToTab(R.id.nav_requests, 3)
+        }
+
+        // Action 2: Thống kê phòng ban
+        itemDeptStats.setOnClickListener {
+            dialog.dismiss()
+            showFeatureDialog(
+                "Thống kê phòng ban",
+                "Tình hình phòng $dept:\n• Tổng nhân sự: 12 người\n• Đi làm đúng giờ: 11 người\n• Đi muộn: 1 người (15 phút)\n• Đang nghỉ phép: 0 người"
+            )
+        }
+
+        // Action 3: Tổng quan nhân sự
+        itemHrOverview.setOnClickListener {
+            dialog.dismiss()
+            showFeatureDialog(
+                "Tổng quan nhân sự",
+                "Tình hình nhân sự toàn công ty:\n• Tổng số nhân sự: 128 người\n• Đang làm việc hôm nay: 121 người\n• Nghỉ phép năm: 5 người\n• Nghỉ ốm / nghỉ chế độ: 2 người\n• Đơn cần phê duyệt: 3 đơn"
+            )
+        }
+
+        // Action 4: Báo cáo / Thống kê
+        itemHrReports.setOnClickListener {
+            dialog.dismiss()
+            (activity as? MainActivity)?.switchToTab(R.id.nav_history)
+        }
+
+        // Action 5: Quản trị hệ thống
+        itemSystemAdmin.setOnClickListener {
+            dialog.dismiss()
+            showFeatureDialog(
+                "Quản trị hệ thống",
+                "Phân hệ dành cho Quản trị viên (Admin):\n• Quản lý danh mục nhân viên & phân quyền tài khoản\n• Cài đặt ca làm việc, địa điểm & khoảng cách chấm công\n• Cấu hình ngày lễ & chính sách nghỉ phép\n• Xuất báo cáo chấm công & bảng lương tháng"
+            )
+        }
+
+        dialog.show()
+    }
+
+    private fun showFeatureDialog(title: String, message: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Đã hiểu", null)
+            .show()
     }
 
     override fun onResume() {

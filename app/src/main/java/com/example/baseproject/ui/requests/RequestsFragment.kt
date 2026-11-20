@@ -76,6 +76,10 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
         }
     }
 
+    fun selectSubTab(tabIndex: Int) {
+        updateTabSelection(tabIndex)
+    }
+
     private fun updateTabSelection(tabIndex: Int) {
         currentTab = tabIndex
 
