@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Khi nút được bật -->
+    <item
+        android:state_enabled="true"
+        android:color="@color/Primary" />
+
+    <!-- Khi nút bị vô hiệu hóa -->
+    <item android:color="#D6D6D6" />
+
+</selector>

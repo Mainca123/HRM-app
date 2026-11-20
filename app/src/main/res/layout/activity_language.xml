@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/back_ground"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <include
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size12"
+        android:layout_marginBottom="@dimen/size12"
+        layout="@layout/tool_bar" />
+
+    <TextView
+        android:id="@+id/tv_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="2"
+
+        android:text="@string/tv_language"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto_regular"
+        android:textSize="@dimen/size15"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcl_language"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnContinue"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+
+        android:text="@string/tv_tieptuc"
+        android:textColor="@drawable/btn_continue_text"
+        android:fontFamily="@font/roboto_semibold"
+        android:textSize="16sp"
+        android:enabled="false"
+
+        app:cornerRadius="12dp"
+        app:backgroundTint="@drawable/btn_continue_background"
+        app:strokeWidth="0dp" />
+
+</LinearLayout>

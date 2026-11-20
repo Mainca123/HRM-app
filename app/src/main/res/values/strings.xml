@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">BaseProject</string>
+
+    <string name="english">English</string>
+    <string name="hindi">Hindi</string>
+    <string name="spanish">Spanish</string>
+    <string name="french">French</string>
+    <string name="portuguese">Portuguese</string>
+    <string name="japan">Japan</string>
+    <string name="korea">Korea</string>
+    <string name="indonesian">Indonesia</string>
+    <string name="german">German</string>
+    <string name="italian">Italian</string>
+    <string name="russian">Russian</string>
+    <string name="turkish">Turkish</string>
+    <string name="chinese">Chinese (中文)</string>
+
+    <string name="title_ob_1">Chấm công mọi lúc, mọi nơi</string>
+    <string name="content_ob_1">Vào ca và tan ca chỉ với một chạm, ghi nhận giờ và vị trí chính xác ngay trên điện thoại.</string>
+
+    <string name="title_ob_2">Xin nghỉ và đăng ký tăng ca dễ dàng</string>
+    <string name="content_ob_2">Gửi đơn nghỉ phép, làm thêm giờ, giải trình đi muộn và theo dõi trạng thái duyệt ngay trong ứng dụng.</string>
+
+    <string name="title_ob_3">Theo dõi công và phê duyệt nhanh</string>
+    <string name="content_ob_3">Xem bảng công theo tháng, quản lý duyệt đơn cho nhóm và HR nắm tình hình chuyên cần toàn công ty.</string>
+
+    <string name="language">Language</string>
+    <string name="tv_tieptuc">Tiếp tục</string>
+    <string name="btn_tieptheo">Tiếp theo</string>
+    <string name="btn_batdau">Bắt đầu</string>
+    <string name="tv_language">Bạn có thể thay đổi lại trong phần Cài đặt bất cứ lúc nào.</string>
+</resources>
