@@ -1,6 +1,28 @@
-# Android ProjectBase Template (AF_ProjectBase Standard)
+# HRM App - Ứng Dụng Chấm Công & Quản Lý Nhân Sự Android
 
-Bộ template dự án gốc Android chuyên nghiệp, được đồng bộ chuẩn xác theo kiến trúc và thư mục mẫu của **AF_ProjectBase**, hỗ trợ song song **Kotlin XML (MVVM)** và dễ dàng mở rộng sang **Kotlin Jetpack Compose**.
+Ứng dụng di động Chấm công và Quản lý nhân sự (HRM), phát triển trên nền tảng Android (Kotlin MVVM, Jetpack, Hilt, Retrofit, Coroutines).
+
+---
+
+## 📲 Tải Về Ứng Dụng (Download APK)
+
+Người dùng và kiểm thử viên có thể tải trực tiếp file APK cài đặt phiên bản mới nhất tại đây:
+
+[![Download APK](https://img.shields.io/badge/Download-HRM__App__v1.0.apk-2563EB?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Mainca123/HRM-app/releases/download/v1.0.0/HRM_App_v1.0.apk)
+
+- 🔗 **Link tải trực tiếp:** [Tải xuống HRM_App_v1.0.apk](https://github.com/Mainca123/HRM-app/releases/download/v1.0.0/HRM_App_v1.0.apk)
+- 📦 **Trang phiên bản Release:** [GitHub Releases v1.0.0](https://github.com/Mainca123/HRM-app/releases/tag/v1.0.0)
+- 📌 **Phiên bản:** `v1.0.0` (Build debug)
+- 📱 **Hỗ trợ:** Android 7.0 (API 24) trở lên
+
+---
+
+## ✨ Tính năng Nổi bật
+- **Chấm công thông minh:** Điểm danh ca làm việc, hỗ trợ nhận diện khuôn mặt / vị trí.
+- **Lịch sử công:** Xem chi tiết thời gian check-in / check-out, ca làm việc, số giờ làm, số phút đi muộn/về sớm theo từng tháng.
+- **Quản lý đơn từ:** Đăng ký nghỉ phép, làm thêm giờ (OT), và gửi đơn giải trình đi muộn/về sớm.
+- **Duyệt đơn quản lý:** Phê duyệt / Từ chối đơn từ cấp dưới trực tiếp trên app.
+- **Đa ngôn ngữ:** Hỗ trợ song ngữ Tiếng Việt & English mượt mà.
 
 ---
 

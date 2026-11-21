@@ -9,11 +9,11 @@ data class AbsenceTypeDto(
     @SerializedName("name")
     val name: String = "",
 
-    @SerializedName("isDeductible")
-    val isDeductible: Boolean = false,
+    @SerializedName("company")
+    val company: Boolean? = true,
 
-    @SerializedName("description")
-    val description: String? = null
+    @SerializedName("si")
+    val si: Boolean? = false
 )
 
 data class LeaveBalanceDto(
@@ -37,9 +37,6 @@ data class LeaveBalanceDto(
 )
 
 data class LeaveRequestDto(
-    @SerializedName("id")
-    val id: Int = 0,
-
     @SerializedName("employeeId")
     val employeeId: Int = 0,
 
@@ -52,40 +49,60 @@ data class LeaveRequestDto(
     @SerializedName("departmentName")
     val departmentName: String? = null,
 
-    @SerializedName("absenceTypeId")
-    val absenceTypeId: String = "",
-
-    @SerializedName("absenceTypeName")
-    val absenceTypeName: String = "",
-
     @SerializedName("fromDate")
     val fromDate: String = "",
 
     @SerializedName("toDate")
-    val toDate: String = "",
+    val toDate: String? = null,
 
-    @SerializedName("daysCount")
-    val daysCount: Double = 1.0,
+    @SerializedName("unit")
+    val unit: Double? = 1.0,
 
-    @SerializedName("reason")
-    val reason: String = "",
+    @SerializedName("absenceId")
+    val absenceId: String = "",
+
+    @SerializedName("absenceName")
+    val absenceName: String? = null,
+
+    @SerializedName("notes")
+    val notes: String? = null,
 
     @SerializedName("status")
-    val status: String = "PENDING", // PENDING, APPROVED, REJECTED, CANCELLED
+    val status: Byte? = 0, // 0: Chờ duyệt, 1: Đã duyệt, 2: Từ chối, 3: Đã hủy
 
-    @SerializedName("createdAt")
-    val createdAt: String? = null,
+    @SerializedName("statusName")
+    val statusName: String? = null,
 
-    @SerializedName("approverName")
-    val approverName: String? = null,
+    @SerializedName("createdUserName")
+    val createdUserName: String? = null,
 
-    @SerializedName("rejectReason")
-    val rejectReason: String? = null
-)
+    @SerializedName("createdDate")
+    val createdDate: String? = null,
+
+    @SerializedName("modifiedUserName")
+    val modifiedUserName: String? = null,
+
+    @SerializedName("modifiedDate")
+    val modifiedDate: String? = null,
+
+    @SerializedName("approvedUserName")
+    val approvedUserName: String? = null,
+
+    @SerializedName("approvedDate")
+    val approvedDate: String? = null
+) {
+    // Helper properties for UI compatibility
+    val id: Int get() = "$employeeId$absenceId$fromDate".hashCode()
+    val daysCount: Double get() = unit ?: 1.0
+    val reason: String get() = notes ?: ""
+    val absenceTypeName: String get() = absenceName ?: absenceId
+    val approverName: String? get() = approvedUserName
+    val isPending: Boolean get() = status == null || status.toInt() == 0
+}
 
 data class CreateLeaveRequest(
-    @SerializedName("absenceTypeId")
-    val absenceTypeId: String,
+    @SerializedName("employeeId")
+    val employeeId: Int? = null,
 
     @SerializedName("fromDate")
     val fromDate: String,
@@ -93,17 +110,37 @@ data class CreateLeaveRequest(
     @SerializedName("toDate")
     val toDate: String,
 
-    @SerializedName("daysCount")
-    val daysCount: Double,
+    @SerializedName("unit")
+    val unit: Double,
 
-    @SerializedName("reason")
-    val reason: String
+    @SerializedName("absenceId")
+    val absenceId: String,
+
+    @SerializedName("notes")
+    val notes: String?
 )
 
-data class LeaveActionRequest(
-    @SerializedName("requestId")
-    val requestId: Int,
+data class LeaveRequestKeyDto(
+    @SerializedName("employeeId")
+    val employeeId: Int,
 
-    @SerializedName("reason")
-    val reason: String? = null
+    @SerializedName("fromDate")
+    val fromDate: String,
+
+    @SerializedName("absenceId")
+    val absenceId: String
+)
+
+data class RejectLeaveRequestDto(
+    @SerializedName("employeeId")
+    val employeeId: Int,
+
+    @SerializedName("fromDate")
+    val fromDate: String,
+
+    @SerializedName("absenceId")
+    val absenceId: String,
+
+    @SerializedName("rejectReason")
+    val rejectReason: String
 )

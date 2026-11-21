@@ -35,6 +35,16 @@ class AttendanceHistoryAdapter(
         holder.bind(items[position])
     }
 
+    private fun formatTime(timeStr: String?): String {
+        if (timeStr.isNullOrBlank()) return "--:--"
+        return try {
+            val t = if (timeStr.contains("T")) timeStr.substringAfter("T") else if (timeStr.contains(" ")) timeStr.substringAfter(" ") else timeStr
+            t.take(5)
+        } catch (_: Exception) {
+            "--:--"
+        }
+    }
+
     override fun getItemCount(): Int = items.size
 
     inner class ViewHolder(private val binding: ItemAttendanceHistoryBinding) :
@@ -65,8 +75,8 @@ class AttendanceHistoryAdapter(
             }
 
             // Time in -> Time out
-            val inStr = item.timeIn?.takeLast(8)?.take(5) ?: "--:--"
-            val outStr = item.timeOut?.takeLast(8)?.take(5) ?: "--:--"
+            val inStr = formatTime(item.timeIn)
+            val outStr = formatTime(item.timeOut)
             binding.tvTimeInOut.text = "$inStr → $outStr"
 
             val shift = item.shiftName?.ifBlank { null } ?: "Ca HC"

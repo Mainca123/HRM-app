@@ -80,8 +80,17 @@ data class MonthlyAttendanceSummaryDto(
     @SerializedName("employeeId")
     val employeeId: Int = 0,
 
+    @SerializedName("employeeCode")
+    val employeeCode: String? = null,
+
     @SerializedName("employeeFullName")
     val employeeFullName: String = "",
+
+    @SerializedName("departmentId")
+    val departmentId: String? = null,
+
+    @SerializedName("departmentName")
+    val departmentName: String? = null,
 
     @SerializedName("month")
     val month: Int = 0,
@@ -89,35 +98,96 @@ data class MonthlyAttendanceSummaryDto(
     @SerializedName("year")
     val year: Int = 0,
 
-    @SerializedName("totalStandardWorkDays")
-    val totalStandardWorkDays: Double = 0.0,
+    @SerializedName("totalWorkDays")
+    val totalWorkDays: Double = 0.0,
 
-    @SerializedName("actualWorkDays")
-    val actualWorkDays: Double = 0.0,
+    @SerializedName("totalOvertimeNormal")
+    val totalOvertimeNormal: Double = 0.0,
+
+    @SerializedName("totalOvertimeNormalNight")
+    val totalOvertimeNormalNight: Double = 0.0,
+
+    @SerializedName("totalOvertimeWeekend")
+    val totalOvertimeWeekend: Double = 0.0,
+
+    @SerializedName("totalOvertimeWeekendNight")
+    val totalOvertimeWeekendNight: Double = 0.0,
+
+    @SerializedName("totalOvertimeHoliday")
+    val totalOvertimeHoliday: Double = 0.0,
+
+    @SerializedName("totalOvertimeHolidayNight")
+    val totalOvertimeHolidayNight: Double = 0.0,
 
     @SerializedName("totalLateMinutes")
-    val totalLateMinutes: Int = 0,
+    val totalLateMinutes: Double = 0.0,
 
     @SerializedName("totalEarlyMinutes")
-    val totalEarlyMinutes: Int = 0,
+    val totalEarlyMinutes: Double = 0.0,
 
-    @SerializedName("totalOvertimeHours")
-    val totalOvertimeHours: Double = 0.0,
+    @SerializedName("totalMealAllowance")
+    val totalMealAllowance: Double = 0.0
+) {
+    // Helper properties for UI compatibility
+    val actualWorkDays: Double get() = totalWorkDays
+    val totalStandardWorkDays: Double get() = 22.0
+    val totalOvertimeHours: Double get() = totalOvertimeNormal + totalOvertimeNormalNight + totalOvertimeWeekend + totalOvertimeHoliday
+}
 
-    @SerializedName("totalPaidLeaveDays")
-    val totalPaidLeaveDays: Double = 0.0,
-
-    @SerializedName("totalUnpaidLeaveDays")
-    val totalUnpaidLeaveDays: Double = 0.0
-)
-
-data class RegisterLateEarlyRequest(
-    @SerializedName("workingDay")
-    val workingDay: String,
-
-    @SerializedName("reason")
-    val reason: String,
+data class CreateLateEarlyRequestDto(
+    @SerializedName("fromDate")
+    val fromDate: String,
 
     @SerializedName("type")
-    val type: String = "LATE" // LATE or EARLY
+    val type: Boolean, // false: Đi muộn, true: Về sớm
+
+    @SerializedName("value")
+    val value: Int = 30, // Số phút
+
+    @SerializedName("reason")
+    val reason: String
+)
+
+data class RegisterLateEarlyDto(
+    @SerializedName("employeeId")
+    val employeeId: Int = 0,
+
+    @SerializedName("employeeCode")
+    val employeeCode: String? = null,
+
+    @SerializedName("employeeFullName")
+    val employeeFullName: String = "",
+
+    @SerializedName("departmentName")
+    val departmentName: String? = null,
+
+    @SerializedName("fromDate")
+    val fromDate: String = "",
+
+    @SerializedName("toDate")
+    val toDate: String? = null,
+
+    @SerializedName("type")
+    val type: Boolean = false,
+
+    @SerializedName("typeName")
+    val typeName: String? = null,
+
+    @SerializedName("value")
+    val value: Int? = null,
+
+    @SerializedName("reason")
+    val reason: String? = null,
+
+    @SerializedName("createdUserName")
+    val createdUserName: String? = null,
+
+    @SerializedName("createdDate")
+    val createdDate: String? = null,
+
+    @SerializedName("modifiedUserName")
+    val modifiedUserName: String? = null,
+
+    @SerializedName("modifiedDate")
+    val modifiedDate: String? = null
 )

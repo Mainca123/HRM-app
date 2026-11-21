@@ -54,7 +54,23 @@ object AppModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+        val customDns = okhttp3.Dns { hostname ->
+            try {
+                okhttp3.Dns.SYSTEM.lookup(hostname)
+            } catch (e: Exception) {
+                if (hostname.contains("onrender.com")) {
+                    listOf(
+                        java.net.InetAddress.getByName("216.24.57.16"),
+                        java.net.InetAddress.getByName("216.24.57.18")
+                    )
+                } else {
+                    throw e
+                }
+            }
+        }
+
         return OkHttpClient.Builder()
+            .dns(customDns)
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)

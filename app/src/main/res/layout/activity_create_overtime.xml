@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen"
     android:orientation="vertical">
 
+    <!-- Top Bar: 12 · Làm thêm giờ -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -28,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Đăng ký làm thêm giờ (OT)"
+            android:text="Làm thêm giờ"
             android:textColor="@color/text_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -44,159 +47,274 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ngày làm việc *"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etWorkDate"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_field"
-                android:clickable="true"
-                android:focusable="false"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Loại tăng ca *"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spOvertimeType"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_field"
-                android:paddingHorizontal="12dp" />
-
-            <LinearLayout
+            <!-- Banner Thống kê: OT đã duyệt tháng này: 8.5 / 40 giờ -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                app:cardBackgroundColor="#F0FDFA"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#CCFBF1"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="OT đã duyệt tháng này"
+                        android:textColor="#0D9488"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvMonthlyOtHours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0 / 40 giờ"
+                        android:textColor="#0D9488"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+            <!-- Card Form: Đăng ký làm thêm giờ -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/border_default"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giờ bắt đầu *"
+                        android:text="Đăng ký làm thêm giờ"
                         android:textColor="@color/text_primary"
-                        android:textSize="14sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/etStartTime"
+                    <!-- Hàng 1: Ngày làm thêm (trái) và Ca làm thêm (phải) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <!-- Cột 1: Ngày làm thêm -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ngày làm thêm *"
+                                android:textColor="@color/text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/layoutWorkDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="6dp"
+                                android:background="@drawable/bg_input_field"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp">
+
+                                <TextView
+                                    android:id="@+id/tvWorkDate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="20/11/2026"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="14sp" />
+
+                                <ImageView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:contentDescription="Lịch"
+                                    android:src="@drawable/ic_calendar"
+                                    app:tint="@color/primary_blue" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Cột 2: Ca làm thêm -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ca làm thêm *"
+                                android:textColor="@color/text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:id="@+id/layoutOvertimeType"
+                                android:layout_width="match_parent"
+                                android:layout_height="48dp"
+                                android:layout_marginTop="6dp"
+                                android:background="@drawable/bg_input_field"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingHorizontal="12dp">
+
+                                <TextView
+                                    android:id="@+id/tvSelectedOvertimeType"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="OT1 - Thêm giờ"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="13sp" />
+
+                                <ImageView
+                                    android:id="@+id/ivOvertimeTypeArrow"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:contentDescription="Dropdown"
+                                    android:src="@drawable/ic_chevron_down"
+                                    app:tint="@color/text_secondary" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Hàng 2: Số giờ làm thêm dự kiến -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Số giờ làm thêm dự kiến *"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="6dp"
                         android:background="@drawable/bg_input_field"
-                        android:hint="17:30"
-                        android:paddingHorizontal="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
-                </LinearLayout>
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="6dp">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                        <!-- Nút Giảm (-) -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnMinusHours"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                            android:layout_width="40dp"
+                            android:layout_height="38dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:insetLeft="0dp"
+                            android:insetRight="0dp"
+                            android:padding="0dp"
+                            android:text="−"
+                            android:textColor="@color/primary_blue"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#EFF6FF"
+                            app:cornerRadius="8dp"
+                            app:strokeColor="@color/border_default"
+                            app:strokeWidth="1dp" />
+
+                        <TextView
+                            android:id="@+id/tvHoursCount"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="3.0 giờ"
+                            android:textColor="@color/text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <!-- Nút Tăng (+) -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPlusHours"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                            android:layout_width="40dp"
+                            android:layout_height="38dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:insetLeft="0dp"
+                            android:insetRight="0dp"
+                            android:padding="0dp"
+                            android:text="+"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="@color/primary_blue"
+                            app:cornerRadius="8dp" />
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Giờ kết thúc *"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="6dp"
+                        android:text="Hệ thống tự kiểm tra trần giới hạn OT của bạn."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
 
-                    <EditText
-                        android:id="@+id/etEndTime"
+                    <!-- Hàng 3: Nội dung công việc -->
+
+                    <!-- Nút Gửi đăng ký tăng ca -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmit"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/bg_input_field"
-                        android:hint="20:30"
-                        android:paddingHorizontal="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp" />
+                        android:layout_marginTop="20dp"
+                        android:backgroundTint="@color/primary_blue"
+                        android:text="GỬI ĐĂNG KÝ TĂNG CA"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="10dp" />
+
                 </LinearLayout>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Tổng số giờ làm thêm *"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etHours"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_field"
-                android:hint="3.0"
-                android:inputType="numberDecimal"
-                android:paddingHorizontal="14dp"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Nội dung công việc *"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etReason"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_input_field"
-                android:gravity="top|start"
-                android:hint="Nhập nội dung công việc cần làm thêm..."
-                android:inputType="textMultiLine"
-                android:padding="14dp"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btnSubmit"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="28dp"
-                android:backgroundTint="@color/primary_blue"
-                android:text="GỬI ĐĂNG KÝ LÀM THÊM GIỜ"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>

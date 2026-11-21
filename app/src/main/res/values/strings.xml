@@ -29,4 +29,43 @@
     <string name="btn_tieptheo">Tiếp theo</string>
     <string name="btn_batdau">Bắt đầu</string>
     <string name="tv_language">Bạn có thể thay đổi lại trong phần Cài đặt bất cứ lúc nào.</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_history">Lịch sử công</string>
+    <string name="nav_requests">Đơn từ</string>
+    <string name="nav_profile">Cá nhân</string>
+
+    <!-- Profile -->
+    <string name="profile_department">Phòng ban</string>
+    <string name="profile_position">Chức vụ</string>
+    <string name="profile_join_date">Ngày vào làm</string>
+    <string name="profile_contract_type">Loại hợp đồng</string>
+    <string name="profile_contract_indefinite">Không thời hạn</string>
+    <string name="profile_work_email">Email công vụ</string>
+    <string name="profile_phone_number">Số điện thoại</string>
+    <string name="profile_change_password">Đổi mật khẩu</string>
+    <string name="profile_biometric_login">Đăng nhập sinh trắc học</string>
+    <string name="profile_language">Ngôn ngữ</string>
+    <string name="profile_logout">Đăng xuất</string>
+    <string name="profile_logout_confirm">Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?</string>
+    <string name="profile_change_password_title">Đổi mật khẩu</string>
+    <string name="profile_current_password">Mật khẩu hiện tại</string>
+    <string name="profile_new_password">Mật khẩu mới (tối thiểu 6 ký tự)</string>
+    <string name="profile_fill_all_fields">Vui lòng nhập đầy đủ thông tin</string>
+    <string name="select_language">Chọn ngôn ngữ</string>
+    <string name="close">Đóng</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="cancel">Hủy</string>
+    <string name="language_changed">Đã đổi ngôn ngữ sang: %1$s</string>
+
+    <!-- Common Home / History / Requests -->
+    <string name="attendance_history_title">Lịch sử chấm công</string>
+    <string name="manage_requests_title">Quản lý đơn từ</string>
+    <string name="tab_leave">Nghỉ phép</string>
+    <string name="tab_overtime">Tăng ca (OT)</string>
+    <string name="tab_explanation">Giải trình</string>
+    <string name="tab_approval">Duyệt đơn</string>
+    <string name="check_in_btn">VÀO CA (CHECK-IN)</string>
+    <string name="check_out_btn">TAN CA (CHECK-OUT)</string>
 </resources>

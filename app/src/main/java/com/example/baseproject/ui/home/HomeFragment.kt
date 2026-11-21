@@ -30,6 +30,8 @@ import com.example.baseproject.ui.management.ApprovalActivity
 import com.example.baseproject.ui.management.DepartmentStatsActivity
 import com.example.baseproject.ui.requests.LeaveRequestAdapter
 import com.example.baseproject.ui.timesheet.TimesheetActivity
+import com.example.baseproject.utils.RoleHelper
+import com.example.baseproject.utils.RoleType
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -69,6 +71,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             adapter = leaveAdapter
         }
 
+        // Quyền truy cập ban đầu cho nút Menu Quản lý
+        val initialUser = viewModel.uiState.value.currentUser
+        val initialRole = RoleHelper.parseRole(initialUser?.role)
+        viewBinding.btnRoleMenu.visibility = if (RoleHelper.isManagementRole(initialRole)) View.VISIBLE else View.GONE
+
         initListeners()
     }
 
@@ -96,21 +103,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             startActivity(Intent(requireContext(), CreateExplanationActivity::class.java))
         }
 
-        // Quick action 4: Bảng công -> Open TimesheetActivity (14 · Bảng công tháng)
+        // Quick action 4: Bảng công -> Open TimesheetActivity
         viewBinding.actionTimesheet.setOnClickListener {
             startActivity(Intent(requireContext(), TimesheetActivity::class.java))
         }
 
         viewBinding.tvViewAllRequests.setOnClickListener {
-            (activity as? com.example.baseproject.MainActivity)?.switchToTab(R.id.nav_requests)
+            (activity as? MainActivity)?.switchToTab(R.id.nav_requests)
         }
 
         viewBinding.btnNotification.setOnClickListener {
-            Toast.makeText(requireContext(), "Bạn có 2 thông báo mới về ca làm việc và đơn nghỉ.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Bạn không có thông báo mới nào.", Toast.LENGTH_SHORT).show()
         }
 
         viewBinding.btnRoleMenu.setOnClickListener {
             val user = viewModel.uiState.value.currentUser
+            val roleType = RoleHelper.parseRole(user?.role)
+            if (!RoleHelper.isManagementRole(roleType)) {
+                Toast.makeText(requireContext(), "Bạn không có quyền quản lý.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val dept = viewModel.uiState.value.dashboard?.departmentName
             showRoleMenuDialog(user?.role, dept)
         }
@@ -140,8 +152,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewBinding.tvGreetingName.text = "Xin chào, $fullName"
 
         val empCode = user?.employeeCode ?: "NV${user?.employeeId ?: 1}"
-        val dept = state.dashboard?.departmentName ?: "Phòng Kỹ thuật"
-        viewBinding.tvEmployeeCodeDept.text = "$empCode · $dept"
+        val dept = state.dashboard?.departmentName ?: "Phòng ban"
+
+        // Phân quyền vai trò người dùng (Role Management)
+        val roleType = RoleHelper.parseRole(user?.role)
+        val roleSubtitle = when (roleType) {
+            RoleType.ADMIN -> "$empCode · Admin"
+            RoleType.HR -> "$empCode · HR"
+            RoleType.MANAGER -> "$empCode · Quản lý"
+            RoleType.EMPLOYEE -> "$empCode · $dept"
+        }
+        viewBinding.tvEmployeeCodeDept.text = roleSubtitle
+
+        // Nút menu quyền (4 ô vuông): CHỈ HIỂN THỊ cho Quản lý, HR, Admin; ẨN với nhân viên thông thường
+        viewBinding.btnRoleMenu.visibility = if (RoleHelper.isManagementRole(roleType)) View.VISIBLE else View.GONE
 
         // Initials avatar
         val parts = fullName.trim().split(" ")
@@ -223,6 +247,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun showRoleMenuDialog(role: String?, department: String?) {
+        val roleType = RoleHelper.parseRole(role)
+        if (!RoleHelper.isManagementRole(roleType)) {
+            Toast.makeText(requireContext(), "Bạn không có quyền quản lý.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_role_menu, null)
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -240,20 +270,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         val itemHrReports = dialogView.findViewById<View>(R.id.itemHrReports)
         val itemSystemAdmin = dialogView.findViewById<View>(R.id.itemSystemAdmin)
 
-        val userRole = (role ?: "Quản lý").uppercase()
         val dept = department ?: "Phòng Kỹ thuật"
 
-        when {
-            userRole.contains("ADMIN") -> {
+        when (roleType) {
+            RoleType.ADMIN -> {
+                // Màn hình 25: Menu quyền — Admin
                 tvTitle.text = "Chức năng quản trị"
                 tvSubtitle.text = "Admin · Toàn công ty"
                 itemApprove.visibility = View.VISIBLE
-                itemDeptStats.visibility = View.VISIBLE
+                itemDeptStats.visibility = View.GONE
                 itemHrOverview.visibility = View.VISIBLE
                 itemHrReports.visibility = View.VISIBLE
                 itemSystemAdmin.visibility = View.VISIBLE
             }
-            userRole.contains("HR") -> {
+            RoleType.HR -> {
+                // Màn hình 24: Menu quyền — HR
                 tvTitle.text = "Chức năng quản lý"
                 tvSubtitle.text = "HR · Toàn công ty"
                 itemApprove.visibility = View.VISIBLE
@@ -262,8 +293,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 itemHrReports.visibility = View.VISIBLE
                 itemSystemAdmin.visibility = View.GONE
             }
-            else -> {
-                // Manager / Quản lý
+            RoleType.MANAGER -> {
+                // Màn hình 23: Menu quyền — Quản lý
                 tvTitle.text = "Chức năng quản lý"
                 tvSubtitle.text = "Quản lý · $dept"
                 itemApprove.visibility = View.VISIBLE
@@ -271,6 +302,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 itemHrOverview.visibility = View.GONE
                 itemHrReports.visibility = View.GONE
                 itemSystemAdmin.visibility = View.GONE
+            }
+            RoleType.EMPLOYEE -> {
+                dialog.dismiss()
+                return
             }
         }
 
@@ -296,7 +331,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             dialog.dismiss()
             showFeatureDialog(
                 "Tổng quan nhân sự",
-                "Tình hình nhân sự toàn công ty:\n• Tổng số nhân sự: 128 người\n• Đang làm việc hôm nay: 121 người\n• Nghỉ phép năm: 5 người\n• Nghỉ ốm / nghỉ chế độ: 2 người\n• Đơn cần phê duyệt: 3 đơn"
+                "Chức năng dành cho Quản lý & HR:\n• Theo dõi quân số đi làm, vắng mặt toàn công ty\n• Xem cơ cấu nhân sự theo từng khối phòng ban\n• Kiểm tra tình hình nghỉ phép năm và tỷ lệ chuyên cần"
             )
         }
 

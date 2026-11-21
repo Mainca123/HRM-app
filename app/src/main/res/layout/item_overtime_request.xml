@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="10dp"
     app:cardBackgroundColor="@color/card_bg"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="14dp"
     app:cardElevation="1dp"
-    app:strokeWidth="0dp">
+    app:strokeColor="@color/border_default"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,44 +31,35 @@
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                tools:text="20/11/2026 · OT Ngày thường" />
+                tools:text="12/11/2026 · OT1" />
 
             <TextView
                 android:id="@+id/tvStatusBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_btn_primary"
-                android:backgroundTint="#FFFBEB"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="3dp"
-                android:textColor="#B45309"
+                android:background="@drawable/bg_badge_status"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="Đã duyệt"
+                android:textColor="#16A34A"
                 android:textSize="11sp"
                 android:textStyle="bold"
-                tools:text="Chờ duyệt" />
+                tools:text="Đã duyệt" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvTimeRange"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:orientation="horizontal">
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            tools:text="17:00 - 19:30 · 2.5 giờ" />
 
-            <TextView
-                android:id="@+id/tvTimeRange"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                tools:text="17:30 - 20:30 (3.0 giờ)" />
-
-            <TextView
-                android:id="@+id/tvReason"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_primary"
-                android:textSize="12sp"
-                tools:text="Fix bug release" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

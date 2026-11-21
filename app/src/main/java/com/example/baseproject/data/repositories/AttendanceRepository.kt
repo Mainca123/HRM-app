@@ -3,8 +3,9 @@ package com.example.baseproject.data.repositories
 import com.example.baseproject.data.api.ApiService
 import com.example.baseproject.data.model.attendance.CheckInRequest
 import com.example.baseproject.data.model.attendance.CheckOutRequest
+import com.example.baseproject.data.model.attendance.CreateLateEarlyRequestDto
 import com.example.baseproject.data.model.attendance.MonthlyAttendanceSummaryDto
-import com.example.baseproject.data.model.attendance.RegisterLateEarlyRequest
+import com.example.baseproject.data.model.attendance.RegisterLateEarlyDto
 import com.example.baseproject.data.model.attendance.ShiftDto
 import com.example.baseproject.data.model.attendance.TimeInTimeOutDto
 import com.example.baseproject.utils.Resource
@@ -72,9 +73,14 @@ class AttendanceRepository @Inject constructor(
 
     suspend fun getMonthlySummary(month: Int? = null, year: Int? = null): Resource<MonthlyAttendanceSummaryDto> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getMonthlyAttendanceSummary(month, year)
+            val response = apiService.getMonthlyAttendanceSummary(pageIndex = 1, pageSize = 20, month = month, year = year)
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
-                Resource.Success(response.body()!!.data!!)
+                val list = response.body()!!.data!!.items
+                val item = list.firstOrNull() ?: MonthlyAttendanceSummaryDto(
+                    month = month ?: 11,
+                    year = year ?: 2026
+                )
+                Resource.Success(item)
             } else {
                 Resource.Error(response.body()?.message ?: "Lỗi tải bảng công tháng")
             }
@@ -83,13 +89,40 @@ class AttendanceRepository @Inject constructor(
         }
     }
 
-    suspend fun explainLateEarly(workingDay: String, reason: String, type: String): Resource<String> = withContext(Dispatchers.IO) {
+    suspend fun explainLateEarly(
+        fromDate: String,
+        reason: String,
+        isEarly: Boolean = false,
+        minutes: Int = 30
+    ): Resource<RegisterLateEarlyDto> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.explainLateEarly(RegisterLateEarlyRequest(workingDay, reason, type))
-            if (response.isSuccessful && response.body()?.success == true) {
-                Resource.Success(response.body()?.data ?: "Gửi giải trình thành công")
+            val request = CreateLateEarlyRequestDto(
+                fromDate = fromDate,
+                type = isEarly,
+                value = minutes,
+                reason = reason
+            )
+            val response = apiService.explainLateEarly(request)
+            if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
+                Resource.Success(response.body()!!.data!!)
             } else {
                 Resource.Error(response.body()?.message ?: "Gửi giải trình thất bại")
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
+        }
+    }
+
+    suspend fun getLateEarlyRequests(
+        pageIndex: Int = 1,
+        pageSize: Int = 50
+    ): Resource<List<RegisterLateEarlyDto>> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.getLateEarlyRequests(pageIndex = pageIndex, pageSize = pageSize)
+            if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
+                Resource.Success(response.body()!!.data!!.items)
+            } else {
+                Resource.Error(response.body()?.message ?: "Lỗi tải danh sách giải trình")
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")

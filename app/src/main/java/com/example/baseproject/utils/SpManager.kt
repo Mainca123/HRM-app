@@ -11,6 +11,7 @@ import com.google.gson.Gson
  * SharedPreferences Manager helper for HRM Application.
  */
 class SpManager(private val preferences: SharedPreferences) {
+    constructor(context: Context) : this(PreferenceManager.getDefaultSharedPreferences(context))
     private val gson = Gson()
 
     companion object {
@@ -54,6 +55,10 @@ class SpManager(private val preferences: SharedPreferences) {
     // Language
     fun saveLanguage(language: Language) {
         preferences.edit().putString(Constant.KEY_SP_CURRENT_LANGUAGE, language.languageCode).apply()
+    }
+
+    fun saveLanguageCode(code: String) {
+        preferences.edit().putString(Constant.KEY_SP_CURRENT_LANGUAGE, code).apply()
     }
 
     fun getLanguage(): String? {

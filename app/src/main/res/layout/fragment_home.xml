@@ -98,7 +98,7 @@
                         android:textStyle="bold" />
                 </FrameLayout>
 
-                <!-- Role Management Menu Button (4 small squares) -->
+                <!-- Role Management Menu Button (4 small squares) - Hidden by default for normal employees -->
                 <FrameLayout
                     android:id="@+id/btnRoleMenu"
                     android:layout_width="42dp"
@@ -106,7 +106,8 @@
                     android:layout_marginStart="8dp"
                     android:background="@drawable/bg_badge_circle_normal"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="20dp"

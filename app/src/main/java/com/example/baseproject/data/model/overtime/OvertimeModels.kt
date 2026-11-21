@@ -3,23 +3,45 @@ package com.example.baseproject.data.model.overtime
 import com.google.gson.annotations.SerializedName
 
 data class OvertimeTypeDto(
-    @SerializedName("id")
-    val id: String = "",
+    @SerializedName("type")
+    val type: Byte = 3,
 
     @SerializedName("name")
     val name: String = "",
 
-    @SerializedName("coefficient")
-    val coefficient: Double = 1.5,
-
     @SerializedName("description")
     val description: String? = null
+) {
+    // Helper property
+    val id: String get() = type.toString()
+}
+
+data class OvertimeLimitDto(
+    @SerializedName("shiftId")
+    val shiftId: String? = null,
+
+    @SerializedName("replacementShiftId")
+    val replacementShiftId: String? = null,
+
+    @SerializedName("fromDate")
+    val fromDate: String? = null,
+
+    @SerializedName("toDate")
+    val toDate: String? = null,
+
+    @SerializedName("value")
+    val value: Double? = null
+)
+
+data class OvertimeTypesResponseDto(
+    @SerializedName("types")
+    val types: List<OvertimeTypeDto> = emptyList(),
+
+    @SerializedName("limits")
+    val limits: List<OvertimeLimitDto> = emptyList()
 )
 
 data class OvertimeRequestDto(
-    @SerializedName("id")
-    val id: Int = 0,
-
     @SerializedName("employeeId")
     val employeeId: Int = 0,
 
@@ -27,63 +49,79 @@ data class OvertimeRequestDto(
     val employeeCode: String? = null,
 
     @SerializedName("employeeFullName")
-    val employeeFullName: String? = null,
+    val employeeFullName: String = "",
 
     @SerializedName("departmentName")
     val departmentName: String? = null,
 
-    @SerializedName("overtimeTypeId")
-    val overtimeTypeId: String = "",
+    @SerializedName("fromDate")
+    val fromDate: String = "",
 
-    @SerializedName("overtimeTypeName")
-    val overtimeTypeName: String? = null,
+    @SerializedName("toDate")
+    val toDate: String? = null,
 
-    @SerializedName("workDate")
-    val workDate: String = "",
+    @SerializedName("type")
+    val type: Byte = 3,
 
-    @SerializedName("startTime")
-    val startTime: String = "",
+    @SerializedName("value")
+    val value: Double? = 0.0,
 
-    @SerializedName("endTime")
-    val endTime: String = "",
+    @SerializedName("createdUserName")
+    val createdUserName: String? = null,
 
-    @SerializedName("hours")
-    val hours: Double = 0.0,
+    @SerializedName("createdDate")
+    val createdDate: String? = null,
 
-    @SerializedName("reason")
-    val reason: String = "",
+    @SerializedName("modifiedUserName")
+    val modifiedUserName: String? = null,
 
-    @SerializedName("status")
-    val status: String = "PENDING", // PENDING, APPROVED, REJECTED
-
-    @SerializedName("approverName")
-    val approverName: String? = null
-)
+    @SerializedName("modifiedDate")
+    val modifiedDate: String? = null
+) {
+    // Helper properties for UI compatibility
+    val id: Int get() = "$employeeId$fromDate$type".hashCode()
+    val workDate: String get() = fromDate
+    val hours: Double get() = value ?: 0.0
+    val isApproved: Boolean get() = !modifiedUserName.isNullOrBlank()
+    val approverName: String? get() = modifiedUserName
+    val overtimeTypeName: String get() = when(type.toInt()) {
+        1 -> "Tăng ca trước ca"
+        2 -> "Tăng ca sau ca"
+        3 -> "Tăng ca theo ngày"
+        else -> "Tăng ca loại $type"
+    }
+}
 
 data class CreateOvertimeRequest(
-    @SerializedName("overtimeTypeId")
-    val overtimeTypeId: String,
+    @SerializedName("employeeId")
+    val employeeId: Int? = null,
 
-    @SerializedName("workDate")
-    val workDate: String,
+    @SerializedName("fromDate")
+    val fromDate: String,
 
-    @SerializedName("startTime")
-    val startTime: String,
+    @SerializedName("toDate")
+    val toDate: String? = null,
 
-    @SerializedName("endTime")
-    val endTime: String,
+    @SerializedName("type")
+    val type: Byte = 3,
 
-    @SerializedName("hours")
-    val hours: Double,
-
-    @SerializedName("reason")
-    val reason: String
+    @SerializedName("value")
+    val value: Double
 )
 
-data class OvertimeActionRequest(
-    @SerializedName("requestId")
-    val requestId: Int,
+data class UpdateOvertimeRequestDto(
+    @SerializedName("employeeId")
+    val employeeId: Int,
 
-    @SerializedName("reason")
-    val reason: String? = null
+    @SerializedName("fromDate")
+    val fromDate: String,
+
+    @SerializedName("type")
+    val type: Byte,
+
+    @SerializedName("toDate")
+    val toDate: String? = null,
+
+    @SerializedName("value")
+    val value: Double
 )

@@ -97,7 +97,8 @@
                         android:text="Duyệt đơn"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </LinearLayout>
             </HorizontalScrollView>
 

@@ -67,6 +67,20 @@ class AuthRepository @Inject constructor(
         }
     }
 
+    suspend fun getEmployeeDetail(id: Int): Resource<com.example.baseproject.data.model.employee.EmployeeDetailDto> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getEmployeeById(id)
+                if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
+                    Resource.Success(response.body()!!.data!!)
+                } else {
+                    Resource.Error(response.body()?.message ?: "Không lấy được thông tin chi tiết nhân viên")
+                }
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
+            }
+        }
+
     suspend fun logout(): Resource<String> = withContext(Dispatchers.IO) {
         try {
             apiService.logout()

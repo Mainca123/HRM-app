@@ -2,10 +2,12 @@ package com.example.baseproject.ui.requests
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.baseproject.data.model.attendance.RegisterLateEarlyDto
 import com.example.baseproject.data.model.auth.UserProfile
 import com.example.baseproject.data.model.leave.LeaveBalanceDto
 import com.example.baseproject.data.model.leave.LeaveRequestDto
 import com.example.baseproject.data.model.overtime.OvertimeRequestDto
+import com.example.baseproject.data.repositories.AttendanceRepository
 import com.example.baseproject.data.repositories.AuthRepository
 import com.example.baseproject.data.repositories.LeaveRepository
 import com.example.baseproject.data.repositories.OvertimeRepository
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class RequestsViewModel @Inject constructor(
     private val leaveRepository: LeaveRepository,
     private val overtimeRepository: OvertimeRepository,
+    private val attendanceRepository: AttendanceRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
@@ -56,13 +59,18 @@ class RequestsViewModel @Inject constructor(
             val otRes = overtimeRepository.getOvertimeRequests()
             val ots = if (otRes is Resource.Success) otRes.data ?: emptyList() else emptyList()
 
+            // Explanations (Late/Early)
+            val explainRes = attendanceRepository.getLateEarlyRequests()
+            val explains = if (explainRes is Resource.Success) explainRes.data ?: emptyList() else emptyList()
+
             // Approvals (pending leaves)
-            val pendingLeaves = leaves.filter { it.status.equals("PENDING", ignoreCase = true) }
+            val pendingLeaves = leaves.filter { it.isPending }
 
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 leaveRequests = leaves,
                 overtimeRequests = ots,
+                explanationRequests = explains,
                 pendingApprovals = pendingLeaves
             )
         }
@@ -71,7 +79,7 @@ class RequestsViewModel @Inject constructor(
     fun approveRequest(request: LeaveRequestDto) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            when (val res = leaveRepository.approveLeave(request.id)) {
+            when (val res = leaveRepository.approveLeave(request.employeeId, request.fromDate, request.absenceId)) {
                 is Resource.Success -> {
                     _uiState.value = _uiState.value.copy(feedbackMessage = "Đã phê duyệt đơn của ${request.employeeFullName ?: ""}")
                     loadData()
@@ -87,7 +95,7 @@ class RequestsViewModel @Inject constructor(
     fun rejectRequest(request: LeaveRequestDto) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            when (val res = leaveRepository.rejectLeave(request.id)) {
+            when (val res = leaveRepository.rejectLeave(request.employeeId, request.fromDate, request.absenceId, "Không phù hợp lịch công tác")) {
                 is Resource.Success -> {
                     _uiState.value = _uiState.value.copy(feedbackMessage = "Đã từ chối đơn của ${request.employeeFullName ?: ""}")
                     loadData()
@@ -110,6 +118,7 @@ data class RequestsUiState(
     val leaveBalance: LeaveBalanceDto? = null,
     val leaveRequests: List<LeaveRequestDto> = emptyList(),
     val overtimeRequests: List<OvertimeRequestDto> = emptyList(),
+    val explanationRequests: List<RegisterLateEarlyDto> = emptyList(),
     val pendingApprovals: List<LeaveRequestDto> = emptyList(),
     val isLoading: Boolean = false,
     val feedbackMessage: String? = null

@@ -1,5 +1,6 @@
 package com.example.baseproject.data.model.dashboard
 
+import com.example.baseproject.data.model.attendance.RegisterLateEarlyDto
 import com.example.baseproject.data.model.leave.LeaveRequestDto
 import com.google.gson.annotations.SerializedName
 
@@ -54,24 +55,39 @@ data class ManagerDashboardDto(
     @SerializedName("departmentName")
     val departmentName: String? = null,
 
-    @SerializedName("totalEmployees")
-    val totalEmployees: Int = 0,
+    @SerializedName("reportDate")
+    val reportDate: String? = null,
 
-    @SerializedName("presentTodayCount")
-    val presentTodayCount: Int = 0,
+    @SerializedName("totalDepartmentEmployees")
+    val totalDepartmentEmployees: Int = 0,
 
-    @SerializedName("absentTodayCount")
-    val absentTodayCount: Int = 0,
+    @SerializedName("presentToday")
+    val presentToday: Int = 0,
 
-    @SerializedName("lateTodayCount")
-    val lateTodayCount: Int = 0,
+    @SerializedName("absentToday")
+    val absentToday: Int = 0,
+
+    @SerializedName("attendanceRate")
+    val attendanceRate: Double = 0.0,
 
     @SerializedName("pendingLeaveRequestsCount")
     val pendingLeaveRequestsCount: Int = 0,
 
-    @SerializedName("pendingExplanationRequestsCount")
-    val pendingExplanationRequestsCount: Int = 0
-)
+    @SerializedName("pendingLateEarlyRequestsCount")
+    val pendingLateEarlyRequestsCount: Int = 0,
+
+    @SerializedName("pendingLeaves")
+    val pendingLeaves: List<LeaveRequestDto> = emptyList(),
+
+    @SerializedName("pendingLateEarlies")
+    val pendingLateEarlies: List<RegisterLateEarlyDto> = emptyList()
+) {
+    // Backward compatibility helpers
+    val totalEmployees: Int get() = totalDepartmentEmployees
+    val presentTodayCount: Int get() = presentToday
+    val absentTodayCount: Int get() = absentToday
+    val pendingExplanationRequestsCount: Int get() = pendingLateEarlyRequestsCount
+}
 
 data class HrDashboardDto(
     @SerializedName("totalCompanyEmployees")

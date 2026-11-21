@@ -52,31 +52,71 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>() {
         }
 
         viewBinding.btnPrevMonth.setOnClickListener {
-            if (selectedMonth > 1) {
-                selectedMonth--
+            var m = selectedMonth
+            var y = selectedYear
+            if (m > 1) {
+                m--
             } else {
-                selectedMonth = 12
-                selectedYear--
+                m = 12
+                y--
             }
-            viewBinding.tvCurrentMonthLabel.text = "Tháng $selectedMonth/$selectedYear"
-            viewModel.loadData(selectedMonth, selectedYear)
+            viewModel.loadData(m, y)
         }
 
         viewBinding.btnNextMonth.setOnClickListener {
-            if (selectedMonth < 12) {
-                selectedMonth++
+            var m = selectedMonth
+            var y = selectedYear
+            if (m < 12) {
+                m++
             } else {
-                selectedMonth = 1
-                selectedYear++
+                m = 1
+                y++
             }
-            viewBinding.tvCurrentMonthLabel.text = "Tháng $selectedMonth/$selectedYear"
-            viewModel.loadData(selectedMonth, selectedYear)
+            viewModel.loadData(m, y)
+        }
+
+        viewBinding.tvCurrentMonthLabel.setOnClickListener {
+            showMonthYearPickerDialog()
         }
 
         viewBinding.chipFilterAll.setOnClickListener { updateFilter(0) }
         viewBinding.chipFilterOnTime.setOnClickListener { updateFilter(1) }
         viewBinding.chipFilterLateEarly.setOnClickListener { updateFilter(2) }
         viewBinding.chipFilterAbsent.setOnClickListener { updateFilter(3) }
+    }
+
+    private fun showMonthYearPickerDialog() {
+        val context = requireContext()
+        val layout = android.widget.LinearLayout(context).apply {
+            orientation = android.widget.LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER
+            setPadding(48, 24, 48, 16)
+        }
+
+        val monthPicker = android.widget.NumberPicker(context).apply {
+            minValue = 1
+            maxValue = 12
+            value = selectedMonth
+            displayedValues = (1..12).map { "Tháng $it" }.toTypedArray()
+        }
+
+        val yearPicker = android.widget.NumberPicker(context).apply {
+            minValue = 2020
+            maxValue = 2035
+            value = selectedYear
+        }
+
+        layout.addView(monthPicker, android.widget.LinearLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        layout.addView(yearPicker, android.widget.LinearLayout.LayoutParams(0, android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(context)
+            .setTitle("Chọn tháng / năm")
+            .setView(layout)
+            .setPositiveButton("Xác nhận") { _, _ ->
+                viewModel.loadData(monthPicker.value, yearPicker.value)
+            }
+            .setNegativeButton("Hủy", null)
+            .show()
     }
 
     private fun updateFilter(filterIndex: Int) {
@@ -122,9 +162,6 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>() {
         allList.clear()
         if (state.historyList.isNotEmpty()) {
             allList.addAll(state.historyList)
-        } else {
-            // Populate exact Figma sample data for Screen 09
-            allList.addAll(createFigmaSampleHistory())
         }
 
         applyFilter()
@@ -144,91 +181,10 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>() {
 
         adapter.submitList(filtered)
         if (filtered.isEmpty()) {
+            viewBinding.tvEmptyHistory.text = "Không có dữ liệu chấm công tháng $selectedMonth/$selectedYear"
             viewBinding.tvEmptyHistory.visibility = View.VISIBLE
         } else {
             viewBinding.tvEmptyHistory.visibility = View.GONE
         }
-    }
-
-    private fun createFigmaSampleHistory(): List<TimeInTimeOutDto> {
-        return listOf(
-            TimeInTimeOutDto(
-                employeeId = 1,
-                workingDay = "2026-11-19",
-                shiftId = "HC",
-                shiftName = "Ca HC",
-                timeIn = "2026-11-19 07:55:00",
-                timeOut = null,
-                workingHours = 8.0,
-                lateMinutes = 0,
-                earlyMinutes = 0
-            ),
-            TimeInTimeOutDto(
-                employeeId = 2,
-                workingDay = "2026-11-18",
-                shiftId = "HC",
-                shiftName = "Ca HC",
-                timeIn = "2026-11-18 08:02:00",
-                timeOut = "2026-11-18 17:30:00",
-                workingHours = 8.5,
-                lateMinutes = 2,
-                earlyMinutes = 0
-            ),
-            TimeInTimeOutDto(
-                employeeId = 3,
-                workingDay = "2026-11-17",
-                shiftId = "HC",
-                shiftName = "Không có dữ liệu quẹt thẻ",
-                timeIn = null,
-                timeOut = null,
-                workingHours = 0.0,
-                lateMinutes = 0,
-                earlyMinutes = 0
-            ),
-            TimeInTimeOutDto(
-                employeeId = 4,
-                workingDay = "2026-11-16",
-                shiftId = "HC",
-                shiftName = "Ca HC",
-                timeIn = "2026-11-16 07:50:00",
-                timeOut = "2026-11-16 17:05:00",
-                workingHours = 8.0,
-                lateMinutes = 0,
-                earlyMinutes = 0
-            ),
-            TimeInTimeOutDto(
-                employeeId = 5,
-                workingDay = "2026-11-13",
-                shiftId = "HC",
-                shiftName = "Ca HC",
-                timeIn = "2026-11-13 07:58:00",
-                timeOut = "2026-11-13 16:45:00",
-                workingHours = 7.8,
-                lateMinutes = 0,
-                earlyMinutes = 15
-            ),
-            TimeInTimeOutDto(
-                employeeId = 6,
-                workingDay = "2026-11-12",
-                shiftId = "HC",
-                shiftName = "Ca HC + OT 2.5h",
-                timeIn = "2026-11-12 07:52:00",
-                timeOut = "2026-11-12 19:30:00",
-                workingHours = 10.5,
-                lateMinutes = 0,
-                earlyMinutes = 0
-            ),
-            TimeInTimeOutDto(
-                employeeId = 7,
-                workingDay = "2026-11-11",
-                shiftId = "HC",
-                shiftName = "Ca HC",
-                timeIn = "2026-11-11 07:57:00",
-                timeOut = "2026-11-11 17:10:00",
-                workingHours = 8.2,
-                lateMinutes = 0,
-                earlyMinutes = 0
-            )
-        )
     }
 }

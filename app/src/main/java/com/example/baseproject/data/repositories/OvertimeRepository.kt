@@ -2,9 +2,9 @@ package com.example.baseproject.data.repositories
 
 import com.example.baseproject.data.api.ApiService
 import com.example.baseproject.data.model.overtime.CreateOvertimeRequest
-import com.example.baseproject.data.model.overtime.OvertimeActionRequest
 import com.example.baseproject.data.model.overtime.OvertimeRequestDto
 import com.example.baseproject.data.model.overtime.OvertimeTypeDto
+import com.example.baseproject.data.model.overtime.UpdateOvertimeRequestDto
 import com.example.baseproject.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,20 +20,29 @@ class OvertimeRepository @Inject constructor(
         try {
             val response = apiService.getOvertimeTypes()
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
-                Resource.Success(response.body()!!.data!!)
+                Resource.Success(response.body()!!.data!!.types)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải loại tăng ca")
+                Resource.Error(response.body()?.message ?: "Lỗi tải danh mục tăng ca")
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
         }
     }
 
-    suspend fun getOvertimeRequests(status: String? = null): Resource<List<OvertimeRequestDto>> = withContext(Dispatchers.IO) {
+    suspend fun getOvertimeRequests(
+        employeeId: Int? = null,
+        departmentId: String? = null
+    ): Resource<List<OvertimeRequestDto>> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getOvertimeRequests(status)
+            val response = apiService.getOvertimeRequests(
+                pageIndex = 1,
+                pageSize = 100,
+                employeeId = employeeId,
+                departmentId = departmentId
+            )
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
-                Resource.Success(response.body()!!.data!!)
+                val items = response.body()!!.data!!.items
+                Resource.Success(items)
             } else {
                 Resource.Error(response.body()?.message ?: "Lỗi tải danh sách tăng ca")
             }
@@ -55,26 +64,26 @@ class OvertimeRepository @Inject constructor(
         }
     }
 
-    suspend fun approveOvertime(requestId: Int, reason: String? = null): Resource<String> = withContext(Dispatchers.IO) {
+    suspend fun updateOvertimeRequest(request: UpdateOvertimeRequestDto): Resource<OvertimeRequestDto> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.approveOvertimeRequest(OvertimeActionRequest(requestId, reason))
-            if (response.isSuccessful && response.body()?.success == true) {
-                Resource.Success(response.body()?.data ?: "Duyệt tăng ca thành công")
+            val response = apiService.updateOvertimeRequest(request)
+            if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
+                Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Duyệt tăng ca thất bại")
+                Resource.Error(response.body()?.message ?: "Cập nhật tăng ca thất bại")
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
         }
     }
 
-    suspend fun rejectOvertime(requestId: Int, reason: String? = null): Resource<String> = withContext(Dispatchers.IO) {
+    suspend fun deleteOvertimeRequest(employeeId: Int, fromDate: String, type: Byte): Resource<Boolean> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.rejectOvertimeRequest(OvertimeActionRequest(requestId, reason))
+            val response = apiService.deleteOvertimeRequest(employeeId, fromDate, type)
             if (response.isSuccessful && response.body()?.success == true) {
-                Resource.Success(response.body()?.data ?: "Từ chối tăng ca thành công")
+                Resource.Success(true)
             } else {
-                Resource.Error(response.body()?.message ?: "Từ chối tăng ca thất bại")
+                Resource.Error(response.body()?.message ?: "Xóa đăng ký tăng ca thất bại")
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")

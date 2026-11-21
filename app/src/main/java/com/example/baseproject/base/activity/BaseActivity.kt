@@ -1,5 +1,6 @@
 package com.example.baseproject.base.activity
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -10,12 +11,25 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
+import com.example.baseproject.utils.LocaleHelper
+import com.example.baseproject.utils.SpManager
 
 /**
  * Base Activity with ViewBinding support and Edge-to-Edge / Fullscreen support (AF_ProjectBase standard).
  */
 abstract class BaseActivity<V : ViewBinding> : AppCompatActivity() {
     lateinit var viewBinding: V
+
+    override fun attachBaseContext(newBase: Context?) {
+        if (newBase == null) {
+            super.attachBaseContext(newBase)
+            return
+        }
+        val spManager = SpManager(newBase)
+        val lang = spManager.getLanguage() ?: "vi"
+        val context = LocaleHelper.setLocale(newBase, lang) ?: newBase
+        super.attachBaseContext(context)
+    }
 
     open fun onBack() {
         finish()

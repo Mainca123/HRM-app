@@ -63,17 +63,13 @@ class CreateExplanationActivity : BaseActivity<ActivityCreateExplanationBinding>
             return
         }
 
-        val type = when (viewBinding.rgExplanationType.checkedRadioButtonId) {
-            R.id.rbEarly -> "EARLY"
-            R.id.rbForgot -> "FORGOT"
-            else -> "LATE"
-        }
+        val isEarly = (viewBinding.rgExplanationType.checkedRadioButtonId == R.id.rbEarly)
 
         viewBinding.btnSubmit.isEnabled = false
         viewBinding.btnSubmit.text = "ĐANG GỬI..."
 
         lifecycleScope.launch {
-            when (val res = attendanceRepository.explainLateEarly(workingDay, reason, type)) {
+            when (val res = attendanceRepository.explainLateEarly(fromDate = workingDay, reason = reason, isEarly = isEarly, minutes = 30)) {
                 is Resource.Success -> {
                     Toast.makeText(this@CreateExplanationActivity, "Gửi đơn giải trình thành công!", Toast.LENGTH_LONG).show()
                     finish()

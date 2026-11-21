@@ -26,6 +26,7 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
 
     private val leaveAdapter = LeaveRequestAdapter()
     private val overtimeAdapter = OvertimeAdapter()
+    private val explanationAdapter = ExplanationRequestAdapter()
     private lateinit var approvalAdapter: ApprovalAdapter
 
     private var currentTab = 0 // 0: Leave, 1: OT, 2: Explanation, 3: Approval
@@ -64,7 +65,14 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
         viewBinding.tabLeave.setOnClickListener { updateTabSelection(0) }
         viewBinding.tabOvertime.setOnClickListener { updateTabSelection(1) }
         viewBinding.tabExplanation.setOnClickListener { updateTabSelection(2) }
-        viewBinding.tabApproval.setOnClickListener { updateTabSelection(3) }
+        viewBinding.tabApproval.setOnClickListener {
+            val roleType = com.example.baseproject.utils.RoleHelper.parseRole(viewModel.uiState.value.currentUser?.role)
+            if (com.example.baseproject.utils.RoleHelper.isManagementRole(roleType)) {
+                updateTabSelection(3)
+            } else {
+                Toast.makeText(requireContext(), "Bạn không có quyền duyệt đơn.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         viewBinding.btnCreateNew.setOnClickListener {
             when (currentTab) {
@@ -120,7 +128,7 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
                 viewBinding.tvListTitle.text = "Danh sách giải trình đi muộn / về sớm"
                 viewBinding.btnCreateNew.visibility = View.VISIBLE
                 viewBinding.btnCreateNew.text = "+ Giải trình"
-                viewBinding.rvRequests.adapter = leaveAdapter
+                viewBinding.rvRequests.adapter = explanationAdapter
             }
             3 -> {
                 viewBinding.cardLeaveBalance.visibility = View.GONE
@@ -140,6 +148,10 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
                 viewModel.uiState.collect { state ->
                     viewBinding.swipeRefresh.isRefreshing = state.isLoading
 
+                    // Phân quyền hiển thị tab Duyệt đơn
+                    val roleType = com.example.baseproject.utils.RoleHelper.parseRole(state.currentUser?.role)
+                    viewBinding.tabApproval.visibility = if (com.example.baseproject.utils.RoleHelper.isManagementRole(roleType)) View.VISIBLE else View.GONE
+
                     state.leaveBalance?.let { b ->
                         viewBinding.tvRemainingLeaveDays.text = "${b.remainingLeaveDays} ngày"
                         viewBinding.tvStandardLeave.text = "Tiêu chuẩn: ${b.standardLeaveDays}"
@@ -148,6 +160,7 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
 
                     leaveAdapter.submitList(state.leaveRequests)
                     overtimeAdapter.submitList(state.overtimeRequests)
+                    explanationAdapter.submitList(state.explanationRequests)
                     approvalAdapter.submitList(state.pendingApprovals)
 
                     renderCurrentList()
@@ -166,7 +179,7 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
         val isEmpty = when (currentTab) {
             0 -> state.leaveRequests.isEmpty()
             1 -> state.overtimeRequests.isEmpty()
-            2 -> state.leaveRequests.isEmpty()
+            2 -> state.explanationRequests.isEmpty()
             3 -> state.pendingApprovals.isEmpty()
             else -> true
         }

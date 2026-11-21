@@ -18,3 +18,23 @@ data class ApiResponse<T>(
     @SerializedName("errors")
     val errors: List<String>? = null
 )
+
+/**
+ * Standard Paged result envelope matching ASP.NET Core backend PagedResultDto<T>.
+ */
+data class PagedResultDto<T>(
+    @SerializedName("items")
+    val items: List<T> = emptyList(),
+
+    @SerializedName("totalCount")
+    val totalCount: Int = 0,
+
+    @SerializedName("pageIndex")
+    val pageIndex: Int = 1,
+
+    @SerializedName("pageSize")
+    val pageSize: Int = 10,
+
+    @SerializedName("totalPages")
+    val totalPages: Int = 0
+)

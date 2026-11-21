@@ -49,6 +49,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             .commit()
 
         initListeners()
+
+        val targetTab = intent.getIntExtra("selected_tab", -1)
+        if (targetTab != -1) {
+            viewBinding.bottomNavigation.selectedItemId = targetTab
+        }
     }
 
     private fun initListeners() {
