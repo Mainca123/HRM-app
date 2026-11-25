@@ -1,11 +1,11 @@
 package com.example.baseproject
 
-import com.example.baseproject.data.model.attendance.ShiftDto
-import com.example.baseproject.data.model.leave.LeaveBalanceDto
-import com.example.baseproject.data.model.leave.LeaveRequestDto
-import com.example.baseproject.utils.ApiErrorParser
-import com.example.baseproject.utils.RoleHelper
-import com.example.baseproject.utils.RoleType
+import com.example.baseproject.data.remote.dto.attendance.ShiftDto
+import com.example.baseproject.data.remote.dto.leave.LeaveBalanceDto
+import com.example.baseproject.data.remote.dto.leave.LeaveRequestDto
+import com.example.baseproject.core.common.ApiErrorParser
+import com.example.baseproject.core.helper.RoleHelper
+import com.example.baseproject.core.helper.RoleType
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody.Companion.toResponseBody

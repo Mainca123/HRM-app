@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.example.baseproject.utils.Constant
-import com.example.baseproject.utils.LocaleHelper
-import com.example.baseproject.utils.SpManager
+import com.example.baseproject.core.common.Constant
+import com.example.baseproject.core.helper.LocaleHelper
+import com.example.baseproject.core.storage.SpManager
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import javax.inject.Singleton
