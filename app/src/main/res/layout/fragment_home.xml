@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="Xin chào, Nhân viên"
+                        android:text="@string/home_greeting_default"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -95,7 +95,8 @@
                         android:text="2"
                         android:textColor="@color/white"
                         android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </FrameLayout>
 
                 <!-- Role Management Menu Button (4 small squares) - Hidden by default for normal employees -->
@@ -193,7 +194,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Giờ vào"
+                                android:text="@string/home_time_in"
                                 android:textColor="#BFDBFE"
                                 android:textSize="11sp" />
 
@@ -220,7 +221,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Giờ ra"
+                                android:text="@string/home_time_out"
                                 android:textColor="#BFDBFE"
                                 android:textSize="11sp" />
 
@@ -243,7 +244,8 @@
                         android:layout_height="48dp"
                         android:layout_marginTop="14dp"
                         android:background="@drawable/bg_btn_primary"
-                        android:backgroundTint="#B45309"
+                        android:backgroundTint="#FFFFFF"
+                        android:elevation="2dp"
                         android:clickable="true"
                         android:focusable="true">
 
@@ -252,8 +254,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="VÀO CA (CHECK-IN)"
-                            android:textColor="@color/white"
+                            android:text="@string/check_in_btn"
+                            android:textColor="#1E40AF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -262,7 +264,7 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_gravity="center"
-                            android:indeterminateTint="@color/white"
+                            android:indeterminateTint="#1E40AF"
                             android:visibility="gone" />
                     </FrameLayout>
                 </LinearLayout>
@@ -317,7 +319,7 @@
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
                                     android:maxLines="1"
-                                    android:text="Ngày công"
+                                    android:text="@string/home_work_days"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
@@ -371,7 +373,7 @@
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
                                     android:maxLines="1"
-                                    android:text="Giờ tăng ca"
+                                    android:text="@string/home_overtime_hours"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
@@ -433,7 +435,7 @@
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
                                     android:maxLines="1"
-                                    android:text="Phép còn lại"
+                                    android:text="@string/home_leave_balance"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
@@ -487,7 +489,7 @@
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
                                     android:maxLines="1"
-                                    android:text="Đi muộn"
+                                    android:text="@string/home_late_minutes"
                                     android:textColor="@color/text_secondary"
                                     android:textSize="11sp" />
 
@@ -543,7 +545,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Xin nghỉ"
+                        android:text="@string/home_action_leave"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -577,7 +579,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Đăng ký OT"
+                        android:text="@string/home_action_overtime"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -611,7 +613,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Giải trình"
+                        android:text="@string/home_action_explain"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -645,7 +647,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="Bảng công"
+                        android:text="@string/home_action_timesheet"
                         android:textColor="@color/text_primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -664,7 +666,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Đơn nghỉ gần đây"
+                    android:text="@string/home_recent_requests"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -677,7 +679,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="4dp"
-                    android:text="Xem tất cả"
+                    android:text="@string/home_view_all"
                     android:textColor="@color/primary_blue"
                     android:textSize="13sp"
                     android:textStyle="bold" />
@@ -722,7 +724,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Chưa có đơn nghỉ nào gần đây"
+                        android:text="@string/home_no_recent_leaves"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
 
@@ -737,7 +739,7 @@
                         android:focusable="true"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="8dp"
-                        android:text="+ Tạo đơn xin nghỉ"
+                        android:text="@string/home_create_leave_btn"
                         android:textColor="@color/primary_blue"
                         android:textSize="13sp"
                         android:textStyle="bold" />

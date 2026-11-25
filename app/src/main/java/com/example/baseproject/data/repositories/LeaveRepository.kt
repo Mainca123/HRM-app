@@ -7,6 +7,8 @@ import com.example.baseproject.data.model.leave.LeaveBalanceDto
 import com.example.baseproject.data.model.leave.LeaveRequestDto
 import com.example.baseproject.data.model.leave.LeaveRequestKeyDto
 import com.example.baseproject.data.model.leave.RejectLeaveRequestDto
+import com.example.baseproject.data.model.leave.UpdateLeaveRequestDto
+import com.example.baseproject.utils.ApiErrorParser
 import com.example.baseproject.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +26,7 @@ class LeaveRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải loại nghỉ phép")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải loại nghỉ phép"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -37,7 +39,7 @@ class LeaveRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải số dư phép")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải số dư phép"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -61,7 +63,7 @@ class LeaveRepository @Inject constructor(
                 val items = response.body()!!.data!!.items
                 Resource.Success(items)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải danh sách đơn nghỉ")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải danh sách đơn nghỉ"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -74,18 +76,20 @@ class LeaveRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                val errorBody = response.errorBody()?.string()
-                val msg = if (!errorBody.isNullOrBlank() && errorBody.contains("message")) {
-                    try {
-                        val jsonObj = com.google.gson.JsonParser.parseString(errorBody).asJsonObject
-                        jsonObj.get("message")?.asString ?: "Tạo đơn nghỉ thất bại"
-                    } catch (_: Exception) {
-                        "Tạo đơn nghỉ thất bại"
-                    }
-                } else {
-                    response.body()?.message ?: "Tạo đơn nghỉ thất bại"
-                }
-                Resource.Error(msg)
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Tạo đơn nghỉ thất bại"))
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
+        }
+    }
+
+    suspend fun updateLeaveRequest(request: UpdateLeaveRequestDto): Resource<LeaveRequestDto> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.updateLeaveRequest(request)
+            if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
+                Resource.Success(response.body()!!.data!!)
+            } else {
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Cập nhật đơn nghỉ thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -103,7 +107,7 @@ class LeaveRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 Resource.Success("Phê duyệt đơn nghỉ phép thành công")
             } else {
-                Resource.Error(response.body()?.message ?: "Duyệt đơn thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Duyệt đơn thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -127,7 +131,7 @@ class LeaveRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 Resource.Success("Từ chối đơn thành công")
             } else {
-                Resource.Error(response.body()?.message ?: "Từ chối đơn thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Từ chối đơn thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -145,7 +149,7 @@ class LeaveRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 Resource.Success("Hủy đơn thành công")
             } else {
-                Resource.Error(response.body()?.message ?: "Hủy đơn thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Hủy đơn thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")

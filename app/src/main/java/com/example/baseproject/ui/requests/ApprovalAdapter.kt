@@ -52,7 +52,11 @@ class ApprovalAdapter(
             val typeName = item.absenceTypeName.ifBlank { "Nghỉ phép" }
             val from = item.fromDate.take(10)
             val to = item.toDate?.take(10) ?: from
-            binding.tvRequestDetails.text = "Loại: $typeName · $from - $to (${item.daysCount} ngày)"
+            binding.tvRequestDetails.text = when {
+                item.absenceId.startsWith("OT:") -> "Loại: $typeName · $from (${item.unit ?: 0.0} giờ)"
+                item.absenceId.startsWith("EXPLAIN:") -> "Loại: $typeName · $from"
+                else -> "Loại: $typeName · $from - $to (${item.daysCount} ngày)"
+            }
             binding.tvRequestReason.text = "Lý do: ${item.reason.ifBlank { "Không có ghi chú" }}"
 
             binding.btnApprove.setOnClickListener {

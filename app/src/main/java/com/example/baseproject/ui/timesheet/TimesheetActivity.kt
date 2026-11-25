@@ -86,36 +86,75 @@ class TimesheetActivity : BaseActivity<ActivityTimesheetBinding>() {
                 }
             }
 
-            // Load monthly attendance summary
-            when (val result = attendanceRepository.getMonthlySummary(selectedMonth, selectedYear)) {
+            // Load monthly attendance summary (use employeeCode search for managers; fallback to my-history for employees)
+            when (val result = attendanceRepository.getMonthlySummary(
+                month = selectedMonth,
+                year = selectedYear,
+                employeeId = user?.employeeId,
+                search = user?.employeeCode
+            )) {
                 is Resource.Success -> {
                     val s = result.data
                     if (s != null) {
-                        viewBinding.tvActualWorkDays.text = "${s.totalWorkDays} công"
-                        viewBinding.tvStandardWorkDays.text = "22"
-                        val rate = ((s.totalWorkDays / 22.0) * 100).coerceIn(0.0, 100.0).toInt()
-                        viewBinding.pbWorkDaysRate.progress = rate
-
-                        viewBinding.tvOtNormal.text = "${s.totalOvertimeNormal} giờ"
-                        viewBinding.tvOtNight.text = "${s.totalOvertimeNormalNight} giờ"
-                        viewBinding.tvLateMinutes.text = "${s.totalLateMinutes.toInt()} phút"
-                        viewBinding.tvEarlyMinutes.text = "${s.totalEarlyMinutes.toInt()} phút"
-                        viewBinding.tvMealCount.text = "${s.totalMealAllowance.toInt()} suất"
+                        bindSummary(
+                            workDays = s.totalWorkDays,
+                            otNormal = s.totalOvertimeNormal,
+                            otNight = s.totalOvertimeNormalNight,
+                            lateMinutes = s.totalLateMinutes.toInt(),
+                            earlyMinutes = s.totalEarlyMinutes.toInt(),
+                            mealCount = s.totalMealAllowance.toInt()
+                        )
                     }
                 }
                 is Resource.Error -> {
-                    Toast.makeText(this@TimesheetActivity, result.message ?: "Chưa có dữ liệu bảng công tháng $selectedMonth/$selectedYear", Toast.LENGTH_SHORT).show()
-                    viewBinding.tvActualWorkDays.text = "0 công"
-                    viewBinding.tvStandardWorkDays.text = "22"
-                    viewBinding.pbWorkDaysRate.progress = 0
-                    viewBinding.tvOtNormal.text = "0 giờ"
-                    viewBinding.tvOtNight.text = "0 giờ"
-                    viewBinding.tvLateMinutes.text = "0 phút"
-                    viewBinding.tvEarlyMinutes.text = "0 phút"
-                    viewBinding.tvMealCount.text = "0 suất"
+                    // Employee role does not have access to /api/attendance/monthly-summary (403); compute from personal history
+                    when (val historyRes = attendanceRepository.getMyHistory(selectedMonth, selectedYear)) {
+                        is Resource.Success -> {
+                            val records = historyRes.data.orEmpty()
+                            val workDays = records.count { !it.timeIn.isNullOrBlank() && !it.timeOut.isNullOrBlank() }.toDouble()
+                            val lateMinutes = records.sumOf { it.lateMinutes ?: 0 }
+                            val earlyMinutes = records.sumOf { it.earlyMinutes ?: 0 }
+                            bindSummary(
+                                workDays = workDays,
+                                otNormal = 0.0,
+                                otNight = 0.0,
+                                lateMinutes = lateMinutes,
+                                earlyMinutes = earlyMinutes,
+                                mealCount = 0
+                            )
+                        }
+                        else -> {
+                            Toast.makeText(
+                                this@TimesheetActivity,
+                                result.message ?: "Chưa có dữ liệu bảng công tháng $selectedMonth/$selectedYear",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            bindSummary(0.0, 0.0, 0.0, 0, 0, 0)
+                        }
+                    }
                 }
                 else -> {}
             }
         }
+    }
+
+    private fun bindSummary(
+        workDays: Double,
+        otNormal: Double,
+        otNight: Double,
+        lateMinutes: Int,
+        earlyMinutes: Int,
+        mealCount: Int
+    ) {
+        viewBinding.tvActualWorkDays.text = "$workDays công"
+        viewBinding.tvStandardWorkDays.text = "22"
+        val rate = ((workDays / 22.0) * 100).coerceIn(0.0, 100.0).toInt()
+        viewBinding.pbWorkDaysRate.progress = rate
+
+        viewBinding.tvOtNormal.text = "$otNormal giờ"
+        viewBinding.tvOtNight.text = "$otNight giờ"
+        viewBinding.tvLateMinutes.text = "$lateMinutes phút"
+        viewBinding.tvEarlyMinutes.text = "$earlyMinutes phút"
+        viewBinding.tvMealCount.text = "$mealCount suất"
     }
 }

@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quản lý đơn từ"
+                android:text="@string/manage_requests_title"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -49,7 +49,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:text="Nghỉ phép"
+                        android:text="@string/tab_leave"
                         android:textColor="@color/white"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -64,7 +64,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:text="Tăng ca (OT)"
+                        android:text="@string/tab_overtime"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -79,7 +79,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:text="Giải trình"
+                        android:text="@string/tab_explanation"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -94,7 +94,7 @@
                         android:focusable="true"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:text="Duyệt đơn"
+                        android:text="@string/tab_approval"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold"
@@ -175,7 +175,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Danh sách đơn nghỉ phép"
+                    android:text="@string/requests_leave_list"
                     android:textColor="@color/text_primary"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -189,7 +189,7 @@
                     android:focusable="true"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
-                    android:text="+ Tạo đơn"
+                    android:text="@string/requests_create_btn"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -201,7 +201,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:gravity="center"
-                android:text="Chưa có dữ liệu đơn"
+                android:text="@string/requests_empty"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 android:visibility="gone" />

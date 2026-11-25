@@ -33,7 +33,7 @@
                     android:id="@+id/tvRoleMenuTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chức năng quản lý"
+                    android:text="@string/role_menu_title"
                     android:textColor="@color/text_primary"
                     android:textSize="17sp"
                     android:textStyle="bold" />
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Duyệt đơn"
+                    android:text="@string/role_menu_approval"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -128,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Thống kê phòng ban"
+                    android:text="@string/role_menu_dept_stats"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -161,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Tổng quan nhân sự"
+                    android:text="@string/role_menu_hr_overview"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -194,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Báo cáo / Thống kê"
+                    android:text="@string/role_menu_reports"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -227,7 +227,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:layout_weight="1"
-                    android:text="Quản trị hệ thống"
+                    android:text="@string/role_menu_admin"
                     android:textColor="@color/text_primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -249,7 +249,7 @@
             android:gravity="center"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:text="Chỉ hiển thị chức năng được cấp quyền."
+            android:text="@string/role_menu_note"
             android:textColor="@color/primary_blue"
             android:textSize="12sp"
             android:textStyle="bold" />

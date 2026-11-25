@@ -3,6 +3,8 @@ package com.example.baseproject.utils
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import java.util.Locale
 
 /**
@@ -10,7 +12,15 @@ import java.util.Locale
  */
 object LocaleHelper {
 
-    private const val DEFAULT_LANGUAGE = "en"
+    private const val DEFAULT_LANGUAGE = "vi"
+
+    fun applyAppLocale(language: String?) {
+        val safeLanguage = language
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+            ?: DEFAULT_LANGUAGE
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(safeLanguage))
+    }
 
     fun onAttach(
         context: Context?,

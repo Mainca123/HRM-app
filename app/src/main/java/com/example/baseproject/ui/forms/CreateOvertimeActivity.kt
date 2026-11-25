@@ -12,11 +12,14 @@ import com.example.baseproject.R
 import com.example.baseproject.base.activity.BaseActivity
 import com.example.baseproject.data.model.overtime.CreateOvertimeRequest
 import com.example.baseproject.data.model.overtime.OvertimeTypeDto
+import com.example.baseproject.data.model.overtime.UpdateOvertimeRequestDto
 import com.example.baseproject.data.repositories.AuthRepository
 import com.example.baseproject.data.repositories.DashboardRepository
 import com.example.baseproject.data.repositories.OvertimeRepository
 import com.example.baseproject.databinding.ActivityCreateOvertimeBinding
 import com.example.baseproject.ui.requests.OvertimeAdapter
+import com.example.baseproject.utils.DialogTone
+import com.example.baseproject.utils.ModernDialogHelper
 import com.example.baseproject.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -47,12 +50,45 @@ class CreateOvertimeActivity : BaseActivity<ActivityCreateOvertimeBinding>() {
 
     private var hoursCount: Double = 3.0
 
+    private var isEditMode: Boolean = false
+    private var editEmployeeId: Int = 0
+    private var editFromDateRaw: String = ""
+    private var editType: Byte = 1
+
+    companion object {
+        const val EXTRA_IS_EDIT = "extra_is_edit"
+        const val EXTRA_EMPLOYEE_ID = "extra_employee_id"
+        const val EXTRA_FROM_DATE = "extra_from_date"
+        const val EXTRA_TYPE = "extra_type"
+        const val EXTRA_HOURS = "extra_hours"
+    }
+
     override fun provideViewBinding(): ActivityCreateOvertimeBinding =
         ActivityCreateOvertimeBinding.inflate(layoutInflater)
 
     override fun initViews() {
         super.initViews()
         applySystemBarInsets(viewBinding.root)
+
+        isEditMode = intent.getBooleanExtra(EXTRA_IS_EDIT, false)
+        if (isEditMode) {
+            editEmployeeId = intent.getIntExtra(EXTRA_EMPLOYEE_ID, 0)
+            editFromDateRaw = intent.getStringExtra(EXTRA_FROM_DATE).orEmpty().take(10)
+            editType = intent.getByteExtra(EXTRA_TYPE, 1)
+            hoursCount = intent.getDoubleExtra(EXTRA_HOURS, 3.0).coerceIn(0.5, 12.0)
+
+            try {
+                if (editFromDateRaw.isNotBlank()) {
+                    calendar.time = dateFormatApi.parse(editFromDateRaw) ?: calendar.time
+                }
+            } catch (_: Exception) {}
+
+            viewBinding.layoutWorkDate.isEnabled = false
+            viewBinding.layoutWorkDate.alpha = 0.6f
+            viewBinding.layoutOvertimeType.isEnabled = false
+            viewBinding.layoutOvertimeType.alpha = 0.6f
+            viewBinding.btnSubmit.text = "CẬP NHẬT TĂNG CA"
+        }
 
         // Khởi tạo giá trị ngày làm thêm và số giờ
         viewBinding.tvWorkDate.text = dateFormatDisplay.format(calendar.time)
@@ -103,7 +139,7 @@ class CreateOvertimeActivity : BaseActivity<ActivityCreateOvertimeBinding>() {
         }
 
         viewBinding.btnSubmit.setOnClickListener {
-            submitOvertime()
+            confirmAndSubmitOvertime()
         }
     }
 
@@ -176,8 +212,11 @@ class CreateOvertimeActivity : BaseActivity<ActivityCreateOvertimeBinding>() {
                 is Resource.Success -> {
                     overtimeTypes = typesRes.data ?: emptyList()
                     if (overtimeTypes.isNotEmpty()) {
-                        selectedTypeIndex = 0
-                        selectedType = overtimeTypes[0]
+                        val matchedIdx = if (isEditMode) {
+                            overtimeTypes.indexOfFirst { it.type == editType }.takeIf { it >= 0 } ?: 0
+                        } else 0
+                        selectedTypeIndex = matchedIdx
+                        selectedType = overtimeTypes[matchedIdx]
                         viewBinding.tvSelectedOvertimeType.text = "OT${selectedType?.type} - ${selectedType?.name}"
                     }
                 }
@@ -186,33 +225,64 @@ class CreateOvertimeActivity : BaseActivity<ActivityCreateOvertimeBinding>() {
         }
     }
 
+    private fun confirmAndSubmitOvertime() {
+        val typeName = selectedType?.let { "OT${it.type} - ${it.name}" } ?: "Tăng ca"
+        val workDateDisplay = dateFormatDisplay.format(calendar.time)
+        val title = if (isEditMode) "Xác nhận cập nhật tăng ca" else "Xác nhận đăng ký tăng ca"
+        val msg = if (isEditMode) {
+            "Bạn có chắc chắn muốn cập nhật đơn $typeName ngày $workDateDisplay thành $hoursCount giờ?"
+        } else {
+            "Bạn có chắc chắn muốn đăng ký $typeName ngày $workDateDisplay ($hoursCount giờ)?"
+        }
+        ModernDialogHelper.showConfirm(
+            context = this,
+            title = title,
+            message = msg,
+            positiveText = getString(R.string.confirm),
+            negativeText = getString(R.string.cancel),
+            tone = DialogTone.PRIMARY,
+            iconRes = R.drawable.ic_ot,
+            onPositive = { submitOvertime() }
+        )
+    }
+
     private fun submitOvertime() {
         val type = selectedType?.type ?: 1.toByte()
         val workDateApi = dateFormatApi.format(calendar.time)
         val hours = hoursCount
 
         viewBinding.btnSubmit.isEnabled = false
-        viewBinding.btnSubmit.text = "ĐANG GỬI..."
+        viewBinding.btnSubmit.text = if (isEditMode) "ĐANG CẬP NHẬT..." else "ĐANG GỬI..."
 
         lifecycleScope.launch {
-            val req = CreateOvertimeRequest(
-                fromDate = workDateApi,
-                toDate = workDateApi,
-                type = type,
-                value = hours
-            )
+            val res = if (isEditMode) {
+                val req = UpdateOvertimeRequestDto(
+                    employeeId = editEmployeeId,
+                    fromDate = editFromDateRaw,
+                    type = editType,
+                    value = hours
+                )
+                overtimeRepository.updateOvertimeRequest(req)
+            } else {
+                val req = CreateOvertimeRequest(
+                    fromDate = workDateApi,
+                    toDate = workDateApi,
+                    type = type,
+                    value = hours
+                )
+                overtimeRepository.createOvertimeRequest(req)
+            }
 
-            when (val res = overtimeRepository.createOvertimeRequest(req)) {
+            when (res) {
                 is Resource.Success -> {
-                    Toast.makeText(this@CreateOvertimeActivity, "Gửi đơn đăng ký OT thành công!", Toast.LENGTH_LONG).show()
-                    viewBinding.btnSubmit.isEnabled = true
-                    viewBinding.btnSubmit.text = "GỬI ĐĂNG KÝ TĂNG CA"
-                    loadData()
+                    val msg = if (isEditMode) "Cập nhật đơn OT thành công!" else "Gửi đơn đăng ký OT thành công!"
+                    Toast.makeText(this@CreateOvertimeActivity, msg, Toast.LENGTH_LONG).show()
+                    finish()
                 }
                 is Resource.Error -> {
                     viewBinding.btnSubmit.isEnabled = true
-                    viewBinding.btnSubmit.text = "GỬI ĐĂNG KÝ TĂNG CA"
-                    showToast(res.message ?: "Đăng ký OT thất bại")
+                    viewBinding.btnSubmit.text = if (isEditMode) "CẬP NHẬT TĂNG CA" else "GỬI ĐĂNG KÝ TĂNG CA"
+                    showToast(res.message ?: if (isEditMode) "Cập nhật OT thất bại" else "Đăng ký OT thất bại")
                 }
                 is Resource.Loading -> {}
             }

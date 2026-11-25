@@ -54,11 +54,11 @@ class SpManager(private val preferences: SharedPreferences) {
 
     // Language
     fun saveLanguage(language: Language) {
-        preferences.edit().putString(Constant.KEY_SP_CURRENT_LANGUAGE, language.languageCode).apply()
+        preferences.edit().putString(Constant.KEY_SP_CURRENT_LANGUAGE, language.languageCode).commit()
     }
 
     fun saveLanguageCode(code: String) {
-        preferences.edit().putString(Constant.KEY_SP_CURRENT_LANGUAGE, code).apply()
+        preferences.edit().putString(Constant.KEY_SP_CURRENT_LANGUAGE, code).commit()
     }
 
     fun getLanguage(): String? {

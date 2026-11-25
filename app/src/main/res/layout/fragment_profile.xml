@@ -13,19 +13,20 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:paddingTop="36dp"
-        android:paddingBottom="48dp">
+        android:paddingTop="32dp"
+        android:paddingBottom="40dp">
 
         <!-- Avatar Initials -->
         <TextView
             android:id="@+id/tvAvatarInitials"
-            android:layout_width="88dp"
-            android:layout_height="88dp"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
             android:background="@drawable/bg_badge_circle"
+            android:elevation="2dp"
             android:gravity="center"
-            android:text="AN"
+            android:text="NV"
             android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
         <!-- User Name -->
@@ -33,27 +34,43 @@
             android:id="@+id/tvFullName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="14dp"
             android:textColor="#0F172A"
-            android:textSize="22sp"
+            android:textSize="21sp"
             android:textStyle="bold"
-            tools:text="Nguyễn Văn An" />
+            tools:text="Giàng Seo Chính" />
 
-        <!-- Role Badge & Code -->
+        <!-- Role Badge & Code Pill -->
         <TextView
             android:id="@+id/tvRoleAndCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="#64748B"
-            android:textSize="14sp"
-            tools:text="NV00125 · Kỹ sư phần mềm" />
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_modern_action_item"
+            android:backgroundTint="#EFF6FF"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="5dp"
+            android:textColor="#1E40AF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="NV00264 · Quản lý" />
 
-        <!-- Card 1: Job Information -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Section 1 Header -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="4dp"
+            android:text="@string/profile_section_info"
+            android:textColor="#64748B"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <!-- Card 1: Verified Employee Information -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
@@ -89,7 +106,7 @@
                         android:textColor="#0F172A"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        tools:text="Phòng Kỹ thuật" />
+                        tools:text="IT" />
                 </LinearLayout>
 
                 <View
@@ -97,7 +114,7 @@
                     android:layout_height="1dp"
                     android:background="#F1F5F9" />
 
-                <!-- Row 2: Chức vụ -->
+                <!-- Row 3: Chức vụ -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -127,7 +144,37 @@
                     android:layout_height="1dp"
                     android:background="#F1F5F9" />
 
-                <!-- Row 3: Ngày vào làm -->
+                <!-- Row 4: Vai trò hệ thống -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/profile_system_role"
+                        android:textColor="#64748B"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvSystemRole"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#1E40AF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        tools:text="Quản lý phòng ban" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F1F5F9" />
+
+                <!-- Row 5: Ngày vào làm -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -149,7 +196,7 @@
                         android:textColor="#0F172A"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        tools:text="01/03/2023" />
+                        tools:text="01/11/2026" />
                 </LinearLayout>
 
                 <View
@@ -157,37 +204,7 @@
                     android:layout_height="1dp"
                     android:background="#F1F5F9" />
 
-                <!-- Row 4: Loại hợp đồng -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/profile_contract_type"
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvContractType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#0F172A"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:text="@string/profile_contract_indefinite" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#F1F5F9" />
-
-                <!-- Row 5: Email công vụ -->
+                <!-- Row 6: Email công vụ -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -209,47 +226,28 @@
                         android:textColor="#0F172A"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        tools:text="an.nv@congty.vn" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#F1F5F9" />
-
-                <!-- Row 6: Số điện thoại -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/profile_phone_number"
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvPhone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#0F172A"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:text="0912 345 678" />
+                        tools:text="chinh.giang@company.com" />
                 </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Section 2 Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="4dp"
+            android:text="@string/profile_section_settings"
+            android:textColor="#64748B"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
         <!-- Card 2: Settings & Actions -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp"
@@ -277,7 +275,8 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        app:srcCompat="@drawable/ic_key_outline" />
+                        app:srcCompat="@drawable/ic_lock"
+                        app:tint="#1E40AF" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -292,7 +291,8 @@
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        app:srcCompat="@drawable/ic_chevron_right" />
+                        app:srcCompat="@drawable/ic_chevron_right"
+                        app:tint="#94A3B8" />
                 </LinearLayout>
 
                 <View
@@ -300,42 +300,7 @@
                     android:layout_height="1dp"
                     android:background="#F1F5F9" />
 
-                <!-- Row 2: Đăng nhập sinh trắc học -->
-                <LinearLayout
-                    android:id="@+id/layoutBiometric"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        app:srcCompat="@drawable/ic_fingerprint" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:text="@string/profile_biometric_login"
-                        android:textColor="#0F172A"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchBiometric"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#F1F5F9" />
-
-                <!-- Row 3: Ngôn ngữ -->
+                <!-- Row 2: Ngôn ngữ -->
                 <LinearLayout
                     android:id="@+id/layoutLanguage"
                     android:layout_width="match_parent"
@@ -349,7 +314,8 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        app:srcCompat="@drawable/ic_globe" />
+                        app:srcCompat="@drawable/ic_globe"
+                        app:tint="#1E40AF" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -373,7 +339,8 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:layout_marginStart="4dp"
-                        app:srcCompat="@drawable/ic_chevron_right" />
+                        app:srcCompat="@drawable/ic_chevron_right"
+                        app:tint="#94A3B8" />
                 </LinearLayout>
 
                 <View
@@ -381,7 +348,7 @@
                     android:layout_height="1dp"
                     android:background="#F1F5F9" />
 
-                <!-- Row 4: Đăng xuất -->
+                <!-- Row 3: Đăng xuất -->
                 <LinearLayout
                     android:id="@+id/layoutLogout"
                     android:layout_width="match_parent"
@@ -395,7 +362,8 @@
                     <ImageView
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        app:srcCompat="@drawable/ic_logout" />
+                        app:srcCompat="@drawable/ic_logout"
+                        app:tint="#DC2626" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -410,6 +378,15 @@
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <!-- App Version Footer -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="HRM Attendance · v1.0"
+            android:textColor="#94A3B8"
+            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>

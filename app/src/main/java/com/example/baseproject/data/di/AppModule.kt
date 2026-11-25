@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
+import com.example.baseproject.BuildConfig
 import com.example.baseproject.data.api.ApiService
 import com.example.baseproject.data.api.AuthInterceptor
 import com.example.baseproject.data.database.AppDatabase
@@ -51,7 +52,11 @@ object AppModule {
     @Singleton
     fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
 
         val customDns = okhttp3.Dns { hostname ->

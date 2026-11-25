@@ -22,14 +22,32 @@ data class ShiftDto(
     @SerializedName("name")
     val name: String = "",
 
-    @SerializedName("startTime")
-    val startTime: String = "",
-
-    @SerializedName("endTime")
-    val endTime: String = "",
-
     @SerializedName("isDefault")
-    val isDefault: Boolean = false
+    val isDefault: Boolean? = false,
+
+    @SerializedName("isNightShift")
+    val isNightShift: Boolean? = false,
+
+    @SerializedName("normalTimeIn")
+    val normalTimeIn: String? = null,
+
+    @SerializedName("normalTimeOut")
+    val normalTimeOut: String? = null,
+
+    @SerializedName("normalBreakOut")
+    val normalBreakOut: String? = null,
+
+    @SerializedName("normalBreakIn")
+    val normalBreakIn: String? = null,
+
+    @SerializedName("normalTotalMinutes")
+    val normalTotalMinutes: Int? = null,
+
+    @SerializedName("lateComingMinutes")
+    val lateComingMinutes: Int? = null,
+
+    @SerializedName("earlyReturningMinutes")
+    val earlyReturningMinutes: Int? = null
 )
 
 data class TimeInTimeOutDto(
@@ -190,4 +208,18 @@ data class RegisterLateEarlyDto(
 
     @SerializedName("modifiedDate")
     val modifiedDate: String? = null
+)
+
+data class ApproveLateEarlyRequestDto(
+    @SerializedName("employeeId")
+    val employeeId: Int,
+
+    @SerializedName("fromDate")
+    val fromDate: String,
+
+    @SerializedName("type")
+    val type: Boolean,
+
+    @SerializedName("adminNote")
+    val adminNote: String? = null
 )

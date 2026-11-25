@@ -12,9 +12,12 @@ import com.example.baseproject.R
 import com.example.baseproject.base.activity.BaseActivity
 import com.example.baseproject.data.model.leave.AbsenceTypeDto
 import com.example.baseproject.data.model.leave.CreateLeaveRequest
+import com.example.baseproject.data.model.leave.UpdateLeaveRequestDto
 import com.example.baseproject.data.repositories.AuthRepository
 import com.example.baseproject.data.repositories.LeaveRepository
 import com.example.baseproject.databinding.ActivityCreateLeaveBinding
+import com.example.baseproject.utils.DialogTone
+import com.example.baseproject.utils.ModernDialogHelper
 import com.example.baseproject.utils.Resource
 import com.google.android.material.button.MaterialButton
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,6 +53,21 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
     private var currentSession: LeaveSession = LeaveSession.ALL_DAY
     private var daysCount: Double = 1.0
 
+    private var isEditMode: Boolean = false
+    private var editEmployeeId: Int = 0
+    private var editAbsenceId: String? = null
+    private var editFromDateRaw: String = ""
+
+    companion object {
+        const val EXTRA_IS_EDIT = "extra_is_edit"
+        const val EXTRA_EMPLOYEE_ID = "extra_employee_id"
+        const val EXTRA_ABSENCE_ID = "extra_absence_id"
+        const val EXTRA_FROM_DATE = "extra_from_date"
+        const val EXTRA_TO_DATE = "extra_to_date"
+        const val EXTRA_UNIT = "extra_unit"
+        const val EXTRA_NOTES = "extra_notes"
+    }
+
     override fun provideViewBinding(): ActivityCreateLeaveBinding =
         ActivityCreateLeaveBinding.inflate(layoutInflater)
 
@@ -67,8 +85,43 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
         fromCalendar.time = today.time
         toCalendar.time = today.time
 
+        isEditMode = intent.getBooleanExtra(EXTRA_IS_EDIT, false)
+        var initialSession = LeaveSession.ALL_DAY
+        if (isEditMode) {
+            editEmployeeId = intent.getIntExtra(EXTRA_EMPLOYEE_ID, 0)
+            editAbsenceId = intent.getStringExtra(EXTRA_ABSENCE_ID)
+            editFromDateRaw = intent.getStringExtra(EXTRA_FROM_DATE).orEmpty().take(10)
+            val editToDateRaw = intent.getStringExtra(EXTRA_TO_DATE).orEmpty().take(10).ifBlank { editFromDateRaw }
+            val editNotes = intent.getStringExtra(EXTRA_NOTES).orEmpty()
+
+            try {
+                if (editFromDateRaw.isNotBlank()) fromCalendar.time = dateFormat.parse(editFromDateRaw) ?: today.time
+                if (editToDateRaw.isNotBlank()) toCalendar.time = dateFormat.parse(editToDateRaw) ?: fromCalendar.time
+            } catch (_: Exception) {}
+
+            when {
+                editNotes.startsWith("[Nghỉ sáng]") -> {
+                    initialSession = LeaveSession.MORNING
+                    viewBinding.etReason.setText(editNotes.removePrefix("[Nghỉ sáng]").trim())
+                }
+                editNotes.startsWith("[Nghỉ chiều]") -> {
+                    initialSession = LeaveSession.AFTERNOON
+                    viewBinding.etReason.setText(editNotes.removePrefix("[Nghỉ chiều]").trim())
+                }
+                else -> {
+                    viewBinding.etReason.setText(editNotes)
+                }
+            }
+
+            viewBinding.layoutAbsenceType.isEnabled = false
+            viewBinding.layoutAbsenceType.alpha = 0.6f
+            viewBinding.etFromDate.isEnabled = false
+            viewBinding.etFromDate.alpha = 0.6f
+            viewBinding.btnSubmit.text = "CẬP NHẬT ĐƠN"
+        }
+
         updateDateFields()
-        selectSession(LeaveSession.ALL_DAY)
+        selectSession(initialSession)
 
         initListeners()
         loadData()
@@ -118,7 +171,7 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
         }
 
         viewBinding.btnSubmit.setOnClickListener {
-            submitLeave()
+            confirmAndSubmitLeave()
         }
     }
 
@@ -252,8 +305,11 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
                 is Resource.Success -> {
                     absenceTypes = res.data ?: emptyList()
                     if (absenceTypes.isNotEmpty()) {
-                        selectedAbsenceIndex = 0
-                        selectedAbsenceType = absenceTypes[0]
+                        val matchedIdx = if (isEditMode && !editAbsenceId.isNullOrBlank()) {
+                            absenceTypes.indexOfFirst { it.id == editAbsenceId }.takeIf { it >= 0 } ?: 0
+                        } else 0
+                        selectedAbsenceIndex = matchedIdx
+                        selectedAbsenceType = absenceTypes[matchedIdx]
                         viewBinding.tvSelectedAbsenceType.text = selectedAbsenceType?.name
                     }
                 }
@@ -275,6 +331,32 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
         }
     }
 
+    private fun confirmAndSubmitLeave() {
+        val absenceType = selectedAbsenceType ?: absenceTypes.firstOrNull()
+        if (absenceType == null) {
+            showToast("Vui lòng chọn loại nghỉ")
+            return
+        }
+        val fromDate = dateFormat.format(fromCalendar.time)
+        val toDate = dateFormat.format(toCalendar.time)
+        val title = if (isEditMode) "Xác nhận cập nhật đơn" else "Xác nhận gửi đơn nghỉ phép"
+        val msg = if (isEditMode) {
+            "Bạn có chắc chắn muốn cập nhật đơn ${absenceType.name} ($fromDate → $toDate, $daysCount ngày)?"
+        } else {
+            "Bạn có chắc chắn muốn gửi đơn ${absenceType.name} từ $fromDate đến $toDate ($daysCount ngày)?"
+        }
+        ModernDialogHelper.showConfirm(
+            context = this,
+            title = title,
+            message = msg,
+            positiveText = getString(R.string.confirm),
+            negativeText = getString(R.string.cancel),
+            tone = DialogTone.PRIMARY,
+            iconRes = R.drawable.ic_leave,
+            onPositive = { submitLeave() }
+        )
+    }
+
     private fun submitLeave() {
         val absenceType = selectedAbsenceType ?: absenceTypes.firstOrNull()
         if (absenceType == null) {
@@ -294,26 +376,40 @@ class CreateLeaveActivity : BaseActivity<ActivityCreateLeaveBinding>() {
         }
 
         viewBinding.btnSubmit.isEnabled = false
-        viewBinding.btnSubmit.text = "ĐANG GỬI..."
+        viewBinding.btnSubmit.text = if (isEditMode) "ĐANG CẬP NHẬT..." else "ĐANG GỬI..."
 
         lifecycleScope.launch {
-            val req = CreateLeaveRequest(
-                absenceId = absenceType.id,
-                fromDate = fromDate,
-                toDate = toDate,
-                unit = days,
-                notes = finalNotes
-            )
+            val res = if (isEditMode) {
+                val req = UpdateLeaveRequestDto(
+                    employeeId = editEmployeeId,
+                    fromDate = editFromDateRaw,
+                    absenceId = editAbsenceId ?: absenceType.id,
+                    toDate = toDate,
+                    unit = days,
+                    notes = finalNotes
+                )
+                leaveRepository.updateLeaveRequest(req)
+            } else {
+                val req = CreateLeaveRequest(
+                    absenceId = absenceType.id,
+                    fromDate = fromDate,
+                    toDate = toDate,
+                    unit = days,
+                    notes = finalNotes
+                )
+                leaveRepository.createLeaveRequest(req)
+            }
 
-            when (val res = leaveRepository.createLeaveRequest(req)) {
+            when (res) {
                 is Resource.Success -> {
-                    Toast.makeText(this@CreateLeaveActivity, "Gửi đơn xin nghỉ thành công!", Toast.LENGTH_LONG).show()
+                    val msg = if (isEditMode) "Cập nhật đơn xin nghỉ thành công!" else "Gửi đơn xin nghỉ thành công!"
+                    Toast.makeText(this@CreateLeaveActivity, msg, Toast.LENGTH_LONG).show()
                     finish()
                 }
                 is Resource.Error -> {
                     viewBinding.btnSubmit.isEnabled = true
-                    viewBinding.btnSubmit.text = "GỬI ĐƠN XIN NGHỈ"
-                    showToast(res.message ?: "Tạo đơn thất bại")
+                    viewBinding.btnSubmit.text = if (isEditMode) "CẬP NHẬT ĐƠN" else "GỬI ĐƠN XIN NGHỈ"
+                    showToast(res.message ?: if (isEditMode) "Cập nhật đơn thất bại" else "Tạo đơn thất bại")
                 }
                 is Resource.Loading -> {}
             }

@@ -37,11 +37,16 @@
     <string name="nav_profile">Cá nhân</string>
 
     <!-- Profile -->
+    <string name="profile_section_info">THÔNG TIN NHÂN SỰ</string>
+    <string name="profile_section_settings">TÀI KHOẢN &amp; CÀI ĐẶT</string>
+    <string name="profile_employee_code">Mã nhân viên</string>
+    <string name="profile_system_role">Vai trò hệ thống</string>
     <string name="profile_department">Phòng ban</string>
     <string name="profile_position">Chức vụ</string>
     <string name="profile_join_date">Ngày vào làm</string>
     <string name="profile_contract_type">Loại hợp đồng</string>
     <string name="profile_contract_indefinite">Không thời hạn</string>
+    <string name="profile_not_updated">Chưa cập nhật</string>
     <string name="profile_work_email">Email công vụ</string>
     <string name="profile_phone_number">Số điện thoại</string>
     <string name="profile_change_password">Đổi mật khẩu</string>
@@ -52,6 +57,8 @@
     <string name="profile_change_password_title">Đổi mật khẩu</string>
     <string name="profile_current_password">Mật khẩu hiện tại</string>
     <string name="profile_new_password">Mật khẩu mới (tối thiểu 6 ký tự)</string>
+    <string name="profile_confirm_password">Xác nhận mật khẩu mới</string>
+    <string name="profile_password_mismatch">Mật khẩu xác nhận không khớp</string>
     <string name="profile_fill_all_fields">Vui lòng nhập đầy đủ thông tin</string>
     <string name="select_language">Chọn ngôn ngữ</string>
     <string name="close">Đóng</string>
@@ -68,4 +75,61 @@
     <string name="tab_approval">Duyệt đơn</string>
     <string name="check_in_btn">VÀO CA (CHECK-IN)</string>
     <string name="check_out_btn">TAN CA (CHECK-OUT)</string>
+    <string name="check_done_btn">ĐÃ HOÀN THÀNH CA LÀM</string>
+    <string name="home_greeting_format">Xin chào, %1$s</string>
+    <string name="unit_hours">%1$s giờ</string>
+    <string name="unit_days">%1$s ngày</string>
+    <string name="unit_minutes">%1$s phút</string>
+
+    <!-- Login -->
+    <string name="login_title">Hệ Thống Quản Lý Chấm Công</string>
+    <string name="login_subtitle">Đăng nhập để bắt đầu ngày làm việc</string>
+    <string name="login_username_label">Tên đăng nhập / Mã nhân viên</string>
+    <string name="login_password_label">Mật khẩu</string>
+    <string name="login_remember">Ghi nhớ đăng nhập</string>
+    <string name="login_forgot_password">Quên mật khẩu?</string>
+    <string name="login_btn">ĐĂNG NHẬP</string>
+
+    <!-- Home -->
+    <string name="home_greeting_default">Xin chào, Nhân viên</string>
+    <string name="home_time_in">Giờ vào</string>
+    <string name="home_time_out">Giờ ra</string>
+    <string name="home_work_days">Ngày công</string>
+    <string name="home_overtime_hours">Giờ tăng ca</string>
+    <string name="home_leave_balance">Phép còn lại</string>
+    <string name="home_late_minutes">Đi muộn</string>
+    <string name="home_action_leave">Xin nghỉ</string>
+    <string name="home_action_overtime">Đăng ký OT</string>
+    <string name="home_action_explain">Giải trình</string>
+    <string name="home_action_timesheet">Bảng công</string>
+    <string name="home_recent_requests">Đơn nghỉ gần đây</string>
+    <string name="home_view_all">Xem tất cả</string>
+    <string name="home_no_recent_leaves">Chưa có đơn nghỉ nào gần đây</string>
+    <string name="home_create_leave_btn">+ Tạo đơn xin nghỉ</string>
+
+    <!-- History & Requests -->
+    <string name="filter_all">Tất cả</string>
+    <string name="filter_on_time">Đúng giờ</string>
+    <string name="filter_late_early">Muộn/Sớm</string>
+    <string name="filter_absent">Vắng</string>
+    <string name="history_empty">Không có dữ liệu chấm công</string>
+    <string name="requests_empty">Chưa có dữ liệu đơn</string>
+    <string name="requests_leave_list">Danh sách đơn nghỉ phép</string>
+    <string name="requests_create_btn">+ Tạo đơn</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_current_pass_hint">Nhập mật khẩu hiện tại</string>
+    <string name="dialog_new_pass_hint">Nhập mật khẩu mới</string>
+    <string name="dialog_confirm_pass_hint">Nhập lại mật khẩu mới</string>
+    <string name="role_menu_title">Chức năng quản lý</string>
+    <string name="role_menu_approval">Duyệt đơn</string>
+    <string name="role_menu_dept_stats">Thống kê phòng ban</string>
+    <string name="role_menu_hr_overview">Tổng quan nhân sự</string>
+    <string name="role_menu_reports">Báo cáo / Thống kê</string>
+    <string name="role_menu_admin">Quản trị hệ thống</string>
+    <string name="role_menu_note">Chỉ hiển thị chức năng được cấp quyền.</string>
+    <string name="confirm_check_in_title">Xác nhận Vào ca (Check-in)</string>
+    <string name="confirm_check_in_message">Bạn có chắc chắn muốn chấm công Vào ca lúc %1$s không?</string>
+    <string name="confirm_check_out_title">Xác nhận Tan ca (Check-out)</string>
+    <string name="confirm_check_out_message">Bạn có chắc chắn muốn chấm công Tan ca lúc %1$s không?</string>
 </resources>

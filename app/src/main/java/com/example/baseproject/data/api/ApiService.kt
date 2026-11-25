@@ -1,5 +1,6 @@
 package com.example.baseproject.data.api
 
+import com.example.baseproject.data.model.attendance.ApproveLateEarlyRequestDto
 import com.example.baseproject.data.model.attendance.CheckInRequest
 import com.example.baseproject.data.model.attendance.CheckOutRequest
 import com.example.baseproject.data.model.attendance.CreateLateEarlyRequestDto
@@ -23,6 +24,7 @@ import com.example.baseproject.data.model.leave.LeaveBalanceDto
 import com.example.baseproject.data.model.leave.LeaveRequestDto
 import com.example.baseproject.data.model.leave.LeaveRequestKeyDto
 import com.example.baseproject.data.model.leave.RejectLeaveRequestDto
+import com.example.baseproject.data.model.leave.UpdateLeaveRequestDto
 import com.example.baseproject.data.model.overtime.CreateOvertimeRequest
 import com.example.baseproject.data.model.overtime.OvertimeRequestDto
 import com.example.baseproject.data.model.overtime.OvertimeTypesResponseDto
@@ -121,6 +123,18 @@ interface ApiService {
         @Query("toDate") toDate: String? = null
     ): Response<ApiResponse<PagedResultDto<RegisterLateEarlyDto>>>
 
+    @DELETE("api/attendance/explain-late-early")
+    suspend fun deleteLateEarlyRequest(
+        @Query("employeeId") employeeId: Int,
+        @Query("fromDate") fromDate: String,
+        @Query("type") type: Boolean
+    ): Response<ApiResponse<Boolean>>
+
+    @PUT("api/attendance/explain-late-early/approve")
+    suspend fun approveLateEarlyRequest(
+        @Body request: ApproveLateEarlyRequestDto
+    ): Response<ApiResponse<RegisterLateEarlyDto>>
+
     // --- Leave Requests ---
     @GET("api/absence-types")
     suspend fun getAbsenceTypes(): Response<ApiResponse<List<AbsenceTypeDto>>>
@@ -142,6 +156,11 @@ interface ApiService {
     @POST("api/leave-requests")
     suspend fun createLeaveRequest(
         @Body request: CreateLeaveRequest
+    ): Response<ApiResponse<LeaveRequestDto>>
+
+    @PUT("api/leave-requests")
+    suspend fun updateLeaveRequest(
+        @Body request: UpdateLeaveRequestDto
     ): Response<ApiResponse<LeaveRequestDto>>
 
     @POST("api/leave-requests/approve")

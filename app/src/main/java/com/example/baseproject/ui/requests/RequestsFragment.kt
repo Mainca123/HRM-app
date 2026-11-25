@@ -16,6 +16,9 @@ import com.example.baseproject.databinding.FragmentRequestsBinding
 import com.example.baseproject.ui.forms.CreateExplanationActivity
 import com.example.baseproject.ui.forms.CreateLeaveActivity
 import com.example.baseproject.ui.forms.CreateOvertimeActivity
+import com.example.baseproject.utils.DialogActionItem
+import com.example.baseproject.utils.DialogTone
+import com.example.baseproject.utils.ModernDialogHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -24,9 +27,9 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
 
     private val viewModel: RequestsViewModel by viewModels()
 
-    private val leaveAdapter = LeaveRequestAdapter()
-    private val overtimeAdapter = OvertimeAdapter()
-    private val explanationAdapter = ExplanationRequestAdapter()
+    private val leaveAdapter = LeaveRequestAdapter(onItemClick = { handleLeaveClick(it) })
+    private val overtimeAdapter = OvertimeAdapter(onItemClick = { handleOvertimeClick(it) })
+    private val explanationAdapter = ExplanationRequestAdapter(onItemClick = { handleExplanationClick(it) })
     private lateinit var approvalAdapter: ApprovalAdapter
 
     private var currentTab = 0 // 0: Leave, 1: OT, 2: Explanation, 3: Approval
@@ -41,10 +44,28 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
 
         approvalAdapter = ApprovalAdapter(
             onApproveClick = { request ->
-                viewModel.approveRequest(request)
+                ModernDialogHelper.showConfirm(
+                    context = requireContext(),
+                    title = "Xác nhận phê duyệt",
+                    message = "Bạn có chắc chắn muốn phê duyệt đơn của ${request.employeeFullName ?: "nhân viên"} (${request.fromDate.take(10)})?",
+                    positiveText = "Phê duyệt",
+                    negativeText = getString(R.string.cancel),
+                    tone = DialogTone.PRIMARY,
+                    iconRes = R.drawable.ic_approve,
+                    onPositive = { viewModel.approveRequest(request) }
+                )
             },
             onRejectClick = { request ->
-                viewModel.rejectRequest(request)
+                ModernDialogHelper.showConfirm(
+                    context = requireContext(),
+                    title = "Xác nhận từ chối",
+                    message = "Bạn có chắc chắn muốn từ chối đơn của ${request.employeeFullName ?: "nhân viên"} (${request.fromDate.take(10)})?",
+                    positiveText = "Từ chối",
+                    negativeText = getString(R.string.cancel),
+                    tone = DialogTone.DANGER,
+                    iconRes = R.drawable.ic_warning,
+                    onPositive = { viewModel.rejectRequest(request) }
+                )
             }
         )
 
@@ -201,5 +222,96 @@ class RequestsFragment : BaseFragment<FragmentRequestsBinding>() {
     override fun onResume() {
         super.onResume()
         viewModel.loadData()
+    }
+
+    private fun handleLeaveClick(item: com.example.baseproject.data.model.leave.LeaveRequestDto) {
+        if (!item.isPending) {
+            Toast.makeText(requireContext(), "Đơn đã được xử lý, không thể chỉnh sửa.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        ModernDialogHelper.showActions(
+            context = requireContext(),
+            title = "Thao tác đơn nghỉ phép",
+            subtitle = "${item.absenceTypeName.ifBlank { "Nghỉ phép" }} · ${item.fromDate.take(10)}",
+            actions = listOf(
+                DialogActionItem("Sửa đơn") {
+                    val intent = Intent(requireContext(), CreateLeaveActivity::class.java).apply {
+                        putExtra(CreateLeaveActivity.EXTRA_IS_EDIT, true)
+                        putExtra(CreateLeaveActivity.EXTRA_EMPLOYEE_ID, item.employeeId)
+                        putExtra(CreateLeaveActivity.EXTRA_ABSENCE_ID, item.absenceId)
+                        putExtra(CreateLeaveActivity.EXTRA_FROM_DATE, item.fromDate)
+                        putExtra(CreateLeaveActivity.EXTRA_TO_DATE, item.toDate ?: item.fromDate)
+                        putExtra(CreateLeaveActivity.EXTRA_UNIT, item.daysCount)
+                        putExtra(CreateLeaveActivity.EXTRA_NOTES, item.reason ?: "")
+                    }
+                    startActivity(intent)
+                },
+                DialogActionItem("Hủy đơn", isDestructive = true) {
+                    ModernDialogHelper.showConfirm(
+                        context = requireContext(),
+                        title = "Xác nhận hủy đơn",
+                        message = "Bạn có chắc chắn muốn hủy đơn nghỉ phép ngày ${item.fromDate.take(10)} không?",
+                        positiveText = "Hủy đơn",
+                        negativeText = getString(R.string.close),
+                        tone = DialogTone.DANGER,
+                        iconRes = R.drawable.ic_warning,
+                        onPositive = { viewModel.cancelLeaveRequest(item) }
+                    )
+                }
+            )
+        )
+    }
+
+    private fun handleOvertimeClick(item: com.example.baseproject.data.model.overtime.OvertimeRequestDto) {
+        if (item.isApproved) {
+            Toast.makeText(requireContext(), "Đơn tăng ca đã được duyệt, không thể chỉnh sửa.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        ModernDialogHelper.showActions(
+            context = requireContext(),
+            title = "Thao tác đơn tăng ca",
+            subtitle = "Ngày ${item.fromDate.take(10)} · OT${item.type} (${item.hours} giờ)",
+            actions = listOf(
+                DialogActionItem("Sửa số giờ") {
+                    val intent = Intent(requireContext(), CreateOvertimeActivity::class.java).apply {
+                        putExtra(CreateOvertimeActivity.EXTRA_IS_EDIT, true)
+                        putExtra(CreateOvertimeActivity.EXTRA_EMPLOYEE_ID, item.employeeId)
+                        putExtra(CreateOvertimeActivity.EXTRA_FROM_DATE, item.fromDate)
+                        putExtra(CreateOvertimeActivity.EXTRA_TYPE, item.type)
+                        putExtra(CreateOvertimeActivity.EXTRA_HOURS, item.hours)
+                    }
+                    startActivity(intent)
+                },
+                DialogActionItem("Xóa đơn", isDestructive = true) {
+                    ModernDialogHelper.showConfirm(
+                        context = requireContext(),
+                        title = "Xác nhận xóa đơn",
+                        message = "Bạn có chắc chắn muốn xóa đơn tăng ca ngày ${item.fromDate.take(10)} không?",
+                        positiveText = "Xóa đơn",
+                        negativeText = getString(R.string.close),
+                        tone = DialogTone.DANGER,
+                        iconRes = R.drawable.ic_warning,
+                        onPositive = { viewModel.deleteOvertimeRequest(item) }
+                    )
+                }
+            )
+        )
+    }
+
+    private fun handleExplanationClick(item: com.example.baseproject.data.model.attendance.RegisterLateEarlyDto) {
+        if (!item.modifiedUserName.isNullOrBlank()) {
+            Toast.makeText(requireContext(), "Đơn giải trình đã được duyệt, không thể xóa.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        ModernDialogHelper.showConfirm(
+            context = requireContext(),
+            title = "Xác nhận xóa đơn giải trình",
+            message = "Bạn có muốn xóa đơn giải trình ngày ${item.fromDate.take(10)} để tạo lại không?",
+            positiveText = "Xóa đơn",
+            negativeText = getString(R.string.close),
+            tone = DialogTone.DANGER,
+            iconRes = R.drawable.ic_warning,
+            onPositive = { viewModel.deleteExplanationRequest(item) }
+        )
     }
 }

@@ -63,8 +63,9 @@ class RequestsViewModel @Inject constructor(
             val explainRes = attendanceRepository.getLateEarlyRequests()
             val explains = if (explainRes is Resource.Success) explainRes.data ?: emptyList() else emptyList()
 
-            // Approvals (pending leaves)
-            val pendingLeaves = leaves.filter { it.isPending }
+            // Approvals (pending leaves from other employees - never self-approve)
+            val currentEmpId = user?.employeeId
+            val pendingLeaves = leaves.filter { it.isPending && it.employeeId != currentEmpId }
 
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
@@ -77,6 +78,10 @@ class RequestsViewModel @Inject constructor(
     }
 
     fun approveRequest(request: LeaveRequestDto) {
+        if (request.employeeId == _uiState.value.currentUser?.employeeId) {
+            _uiState.value = _uiState.value.copy(feedbackMessage = "Bạn không thể tự phê duyệt đơn của chính mình.")
+            return
+        }
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             when (val res = leaveRepository.approveLeave(request.employeeId, request.fromDate, request.absenceId)) {
@@ -93,6 +98,10 @@ class RequestsViewModel @Inject constructor(
     }
 
     fun rejectRequest(request: LeaveRequestDto) {
+        if (request.employeeId == _uiState.value.currentUser?.employeeId) {
+            _uiState.value = _uiState.value.copy(feedbackMessage = "Bạn không thể tự từ chối đơn của chính mình.")
+            return
+        }
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             when (val res = leaveRepository.rejectLeave(request.employeeId, request.fromDate, request.absenceId, "Không phù hợp lịch công tác")) {
@@ -102,6 +111,54 @@ class RequestsViewModel @Inject constructor(
                 }
                 is Resource.Error -> {
                     _uiState.value = _uiState.value.copy(isLoading = false, feedbackMessage = res.message ?: "Từ chối thất bại")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun cancelLeaveRequest(request: LeaveRequestDto) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            when (val res = leaveRepository.cancelLeave(request.employeeId, request.fromDate, request.absenceId)) {
+                is Resource.Success -> {
+                    _uiState.value = _uiState.value.copy(feedbackMessage = "Đã hủy đơn nghỉ phép")
+                    loadData()
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, feedbackMessage = res.message ?: "Hủy đơn thất bại")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun deleteOvertimeRequest(request: OvertimeRequestDto) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            when (val res = overtimeRepository.deleteOvertimeRequest(request.employeeId, request.fromDate.take(10), request.type)) {
+                is Resource.Success -> {
+                    _uiState.value = _uiState.value.copy(feedbackMessage = "Đã xóa đơn đăng ký tăng ca")
+                    loadData()
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, feedbackMessage = res.message ?: "Xóa đơn thất bại")
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun deleteExplanationRequest(request: RegisterLateEarlyDto) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            when (val res = attendanceRepository.deleteLateEarlyRequest(request.employeeId, request.fromDate.take(10), request.type)) {
+                is Resource.Success -> {
+                    _uiState.value = _uiState.value.copy(feedbackMessage = "Đã xóa đơn giải trình")
+                    loadData()
+                }
+                is Resource.Error -> {
+                    _uiState.value = _uiState.value.copy(isLoading = false, feedbackMessage = res.message ?: "Xóa đơn thất bại")
                 }
                 else -> {}
             }

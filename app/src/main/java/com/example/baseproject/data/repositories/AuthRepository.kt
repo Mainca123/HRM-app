@@ -4,6 +4,7 @@ import com.example.baseproject.data.api.ApiService
 import com.example.baseproject.data.model.auth.LoginRequest
 import com.example.baseproject.data.model.auth.LoginResponse
 import com.example.baseproject.data.model.auth.UserProfile
+import com.example.baseproject.utils.ApiErrorParser
 import com.example.baseproject.utils.Resource
 import com.example.baseproject.utils.SpManager
 import kotlinx.coroutines.Dispatchers
@@ -34,17 +35,10 @@ class AuthRepository @Inject constructor(
                         Resource.Error(errorMsg)
                     }
                 } else {
-                    val errorBody = response.errorBody()?.string()
-                    val msg = if (!errorBody.isNullOrBlank() && errorBody.contains("message")) {
-                        try {
-                            val jsonObj = com.google.gson.JsonParser.parseString(errorBody).asJsonObject
-                            jsonObj.get("message")?.asString ?: "Tên đăng nhập hoặc mật khẩu không chính xác"
-                        } catch (_: Exception) {
-                            "Tên đăng nhập hoặc mật khẩu không chính xác"
-                        }
-                    } else {
-                        "Đăng nhập thất bại (Mã lỗi ${response.code()})"
-                    }
+                    val msg = ApiErrorParser.extractErrorMessage(
+                        response,
+                        "Tên đăng nhập hoặc mật khẩu không chính xác"
+                    )
                     Resource.Error(msg)
                 }
             } catch (e: Exception) {
@@ -60,7 +54,7 @@ class AuthRepository @Inject constructor(
                 spManager.saveUserProfile(user)
                 Resource.Success(user)
             } else {
-                Resource.Error(response.body()?.message ?: "Không lấy được thông tin người dùng")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Không lấy được thông tin người dùng"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -74,7 +68,7 @@ class AuthRepository @Inject constructor(
                 if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                     Resource.Success(response.body()!!.data!!)
                 } else {
-                    Resource.Error(response.body()?.message ?: "Không lấy được thông tin chi tiết nhân viên")
+                    Resource.Error(ApiErrorParser.extractErrorMessage(response, "Không lấy được thông tin chi tiết nhân viên"))
                 }
             } catch (e: Exception) {
                 Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -109,7 +103,7 @@ class AuthRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 Resource.Success(true)
             } else {
-                Resource.Error(response.body()?.message ?: "Đổi mật khẩu thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Đổi mật khẩu thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")

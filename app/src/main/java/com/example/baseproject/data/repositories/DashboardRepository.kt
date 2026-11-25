@@ -4,6 +4,7 @@ import com.example.baseproject.data.api.ApiService
 import com.example.baseproject.data.model.dashboard.EmployeeDashboardDto
 import com.example.baseproject.data.model.dashboard.HrDashboardDto
 import com.example.baseproject.data.model.dashboard.ManagerDashboardDto
+import com.example.baseproject.utils.ApiErrorParser
 import com.example.baseproject.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,7 +22,7 @@ class DashboardRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Không tải được dữ liệu bảng điều khiển")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Không tải được dữ liệu bảng điều khiển"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -34,7 +35,7 @@ class DashboardRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải dữ liệu quản lý")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải dữ liệu quản lý"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối")
@@ -47,7 +48,7 @@ class DashboardRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải dữ liệu HR")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải dữ liệu HR"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối")

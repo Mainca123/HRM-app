@@ -81,6 +81,7 @@ class LanguageActivity : BaseActivity<ActivityLanguageBinding>() {
         selectLanguageModel?.let { language ->
             spManager.saveLanguage(language)
             spManager.setLanguageChosen()
+            com.example.baseproject.utils.LocaleHelper.applyAppLocale(language.languageCode)
             startActivity(Intent(this, OnboardingActivity::class.java))
             finish()
         }

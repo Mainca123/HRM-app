@@ -26,10 +26,17 @@
     <string name="profile_biometric_login">Biometric Login</string>
     <string name="profile_language">Language</string>
     <string name="profile_logout">Log Out</string>
+    <string name="profile_section_info">EMPLOYEE INFORMATION</string>
+    <string name="profile_section_settings">ACCOUNT &amp; SETTINGS</string>
+    <string name="profile_employee_code">Employee Code</string>
+    <string name="profile_system_role">System Role</string>
+    <string name="profile_not_updated">Not updated</string>
     <string name="profile_logout_confirm">Are you sure you want to log out?</string>
     <string name="profile_change_password_title">Change Password</string>
     <string name="profile_current_password">Current Password</string>
     <string name="profile_new_password">New Password (min 6 characters)</string>
+    <string name="profile_confirm_password">Confirm New Password</string>
+    <string name="profile_password_mismatch">Confirmation password does not match</string>
     <string name="profile_fill_all_fields">Please fill in all information</string>
     <string name="select_language">Select Language</string>
     <string name="close">Close</string>
@@ -44,6 +51,74 @@
     <string name="tab_overtime">Overtime (OT)</string>
     <string name="tab_explanation">Explanation</string>
     <string name="tab_approval">Approvals</string>
+    <string name="title_ob_1">Check in anytime, anywhere</string>
+    <string name="content_ob_1">Clock in and out with one tap, recording accurate time and location right on your phone.</string>
+
+    <string name="title_ob_2">Easy leave &amp; overtime requests</string>
+    <string name="content_ob_2">Submit leave, overtime, and late/early explanation requests and track approval status in-app.</string>
+
+    <string name="title_ob_3">Timesheets &amp; quick approvals</string>
+    <string name="content_ob_3">View monthly attendance summaries, approve team requests, and monitor company-wide attendance.</string>
+
+    <string name="tv_language">You can change this anytime in Settings.</string>
+
     <string name="check_in_btn">CHECK-IN</string>
     <string name="check_out_btn">CHECK-OUT</string>
+    <string name="check_done_btn">SHIFT COMPLETED</string>
+    <string name="home_greeting_format">Hello, %1$s</string>
+    <string name="unit_hours">%1$s hrs</string>
+    <string name="unit_days">%1$s days</string>
+    <string name="unit_minutes">%1$s mins</string>
+
+    <!-- Login -->
+    <string name="login_title">Attendance Management System</string>
+    <string name="login_subtitle">Sign in to start your workday</string>
+    <string name="login_username_label">Username / Employee Code</string>
+    <string name="login_password_label">Password</string>
+    <string name="login_remember">Remember login</string>
+    <string name="login_forgot_password">Forgot password?</string>
+    <string name="login_btn">SIGN IN</string>
+
+    <!-- Home -->
+    <string name="home_greeting_default">Hello, Employee</string>
+    <string name="home_time_in">Time In</string>
+    <string name="home_time_out">Time Out</string>
+    <string name="home_work_days">Work Days</string>
+    <string name="home_overtime_hours">Overtime</string>
+    <string name="home_leave_balance">Leave Left</string>
+    <string name="home_late_minutes">Late</string>
+    <string name="home_action_leave">Leave</string>
+    <string name="home_action_overtime">Overtime</string>
+    <string name="home_action_explain">Explain</string>
+    <string name="home_action_timesheet">Timesheet</string>
+    <string name="home_recent_requests">Recent Leave Requests</string>
+    <string name="home_view_all">View all</string>
+    <string name="home_no_recent_leaves">No recent leave requests</string>
+    <string name="home_create_leave_btn">+ Create Leave Request</string>
+
+    <!-- History & Requests -->
+    <string name="filter_all">All</string>
+    <string name="filter_on_time">On Time</string>
+    <string name="filter_late_early">Late/Early</string>
+    <string name="filter_absent">Absent</string>
+    <string name="history_empty">No attendance records</string>
+    <string name="requests_empty">No requests found</string>
+    <string name="requests_leave_list">Leave Requests</string>
+    <string name="requests_create_btn">+ Create</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_current_pass_hint">Enter current password</string>
+    <string name="dialog_new_pass_hint">Enter new password</string>
+    <string name="dialog_confirm_pass_hint">Re-enter new password</string>
+    <string name="role_menu_title">Management Tools</string>
+    <string name="role_menu_approval">Approvals</string>
+    <string name="role_menu_dept_stats">Department Stats</string>
+    <string name="role_menu_hr_overview">HR Overview</string>
+    <string name="role_menu_reports">Reports &amp; Analytics</string>
+    <string name="role_menu_admin">System Admin</string>
+    <string name="role_menu_note">Only authorized features are shown.</string>
+    <string name="confirm_check_in_title">Confirm Check-in</string>
+    <string name="confirm_check_in_message">Are you sure you want to check in at %1$s?</string>
+    <string name="confirm_check_out_title">Confirm Check-out</string>
+    <string name="confirm_check_out_message">Are you sure you want to check out at %1$s?</string>
 </resources>

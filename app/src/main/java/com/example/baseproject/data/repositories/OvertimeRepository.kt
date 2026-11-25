@@ -5,6 +5,7 @@ import com.example.baseproject.data.model.overtime.CreateOvertimeRequest
 import com.example.baseproject.data.model.overtime.OvertimeRequestDto
 import com.example.baseproject.data.model.overtime.OvertimeTypeDto
 import com.example.baseproject.data.model.overtime.UpdateOvertimeRequestDto
+import com.example.baseproject.utils.ApiErrorParser
 import com.example.baseproject.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,7 +23,7 @@ class OvertimeRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!.types)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải danh mục tăng ca")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải danh mục tăng ca"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -44,7 +45,7 @@ class OvertimeRepository @Inject constructor(
                 val items = response.body()!!.data!!.items
                 Resource.Success(items)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải danh sách tăng ca")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải danh sách tăng ca"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -57,7 +58,7 @@ class OvertimeRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Đăng ký tăng ca thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Đăng ký tăng ca thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -70,7 +71,7 @@ class OvertimeRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Cập nhật tăng ca thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Cập nhật tăng ca thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -83,7 +84,7 @@ class OvertimeRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 Resource.Success(true)
             } else {
-                Resource.Error(response.body()?.message ?: "Xóa đăng ký tăng ca thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Xóa đăng ký tăng ca thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")

@@ -20,21 +20,31 @@ data class LeaveBalanceDto(
     @SerializedName("employeeId")
     val employeeId: Int = 0,
 
-    @SerializedName("standardLeaveDays")
-    val standardLeaveDays: Double = 12.0,
+    @SerializedName("employeeCode")
+    val employeeCode: String? = null,
 
-    @SerializedName("seniorityLeaveDays")
-    val seniorityLeaveDays: Double = 0.0,
-
-    @SerializedName("usedLeaveDays")
-    val usedLeaveDays: Double = 0.0,
-
-    @SerializedName("remainingLeaveDays")
-    val remainingLeaveDays: Double = 12.0,
+    @SerializedName("employeeFullName")
+    val employeeFullName: String? = null,
 
     @SerializedName("year")
-    val year: Int = 2026
-)
+    val year: Int = 2026,
+
+    @SerializedName("totalAllocated")
+    val totalAllocated: Double = 12.0,
+
+    @SerializedName("usedDays")
+    val usedDays: Double = 0.0,
+
+    @SerializedName("pendingDays")
+    val pendingDays: Double = 0.0,
+
+    @SerializedName("remainingDays")
+    val remainingDays: Double = 12.0
+) {
+    val standardLeaveDays: Double get() = totalAllocated
+    val usedLeaveDays: Double get() = usedDays
+    val remainingLeaveDays: Double get() = remainingDays
+}
 
 data class LeaveRequestDto(
     @SerializedName("employeeId")
@@ -115,6 +125,26 @@ data class CreateLeaveRequest(
 
     @SerializedName("absenceId")
     val absenceId: String,
+
+    @SerializedName("notes")
+    val notes: String?
+)
+
+data class UpdateLeaveRequestDto(
+    @SerializedName("employeeId")
+    val employeeId: Int,
+
+    @SerializedName("fromDate")
+    val fromDate: String,
+
+    @SerializedName("absenceId")
+    val absenceId: String,
+
+    @SerializedName("toDate")
+    val toDate: String,
+
+    @SerializedName("unit")
+    val unit: Double,
 
     @SerializedName("notes")
     val notes: String?

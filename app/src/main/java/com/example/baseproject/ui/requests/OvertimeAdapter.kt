@@ -10,7 +10,8 @@ import com.example.baseproject.databinding.ItemOvertimeRequestBinding
 import java.util.Locale
 
 class OvertimeAdapter(
-    private var items: List<OvertimeRequestDto> = emptyList()
+    private var items: List<OvertimeRequestDto> = emptyList(),
+    private val onItemClick: ((OvertimeRequestDto) -> Unit)? = null
 ) : RecyclerView.Adapter<OvertimeAdapter.ViewHolder>() {
 
     fun submitList(newItems: List<OvertimeRequestDto>) {
@@ -61,6 +62,10 @@ class OvertimeAdapter(
                 binding.tvStatusBadge.text = "Chờ duyệt"
                 binding.tvStatusBadge.setTextColor(0xFFD97706.toInt())
                 binding.tvStatusBadge.backgroundTintList = ColorStateList.valueOf(0xFFFEF3C7.toInt())
+            }
+
+            binding.root.setOnClickListener {
+                onItemClick?.invoke(item)
             }
         }
 

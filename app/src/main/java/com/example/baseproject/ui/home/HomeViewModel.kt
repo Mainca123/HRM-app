@@ -54,7 +54,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun handleCheckInOut() {
+    fun handleCheckInOut(gpsNotes: String? = null) {
         val currentDashboard = _uiState.value.dashboard
         val hasCheckedIn = !currentDashboard?.todayTimeIn.isNullOrBlank()
         val hasCheckedOut = !currentDashboard?.todayTimeOut.isNullOrBlank()
@@ -63,8 +63,8 @@ class HomeViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isCheckingInOut = true, checkInOutMessage = null)
 
             if (!hasCheckedIn) {
-                // Perform Check-in
-                when (val result = attendanceRepository.checkIn()) {
+                // Perform Check-in with GPS verification note
+                when (val result = attendanceRepository.checkIn(notes = gpsNotes)) {
                     is Resource.Success -> {
                         _uiState.value = _uiState.value.copy(
                             isCheckingInOut = false,
@@ -81,8 +81,8 @@ class HomeViewModel @Inject constructor(
                     is Resource.Loading -> {}
                 }
             } else if (!hasCheckedOut) {
-                // Perform Check-out
-                when (val result = attendanceRepository.checkOut()) {
+                // Perform Check-out with GPS verification note
+                when (val result = attendanceRepository.checkOut(notes = gpsNotes)) {
                     is Resource.Success -> {
                         _uiState.value = _uiState.value.copy(
                             isCheckingInOut = false,

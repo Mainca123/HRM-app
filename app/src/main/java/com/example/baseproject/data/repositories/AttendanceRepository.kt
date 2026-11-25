@@ -1,6 +1,7 @@
 package com.example.baseproject.data.repositories
 
 import com.example.baseproject.data.api.ApiService
+import com.example.baseproject.data.model.attendance.ApproveLateEarlyRequestDto
 import com.example.baseproject.data.model.attendance.CheckInRequest
 import com.example.baseproject.data.model.attendance.CheckOutRequest
 import com.example.baseproject.data.model.attendance.CreateLateEarlyRequestDto
@@ -8,6 +9,7 @@ import com.example.baseproject.data.model.attendance.MonthlyAttendanceSummaryDto
 import com.example.baseproject.data.model.attendance.RegisterLateEarlyDto
 import com.example.baseproject.data.model.attendance.ShiftDto
 import com.example.baseproject.data.model.attendance.TimeInTimeOutDto
+import com.example.baseproject.utils.ApiErrorParser
 import com.example.baseproject.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,7 +27,7 @@ class AttendanceRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải ca làm việc")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải ca làm việc"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -38,7 +40,7 @@ class AttendanceRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Check-in thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Check-in thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối khi Check-in")
@@ -51,7 +53,7 @@ class AttendanceRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Check-out thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Check-out thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối khi Check-out")
@@ -64,25 +66,41 @@ class AttendanceRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải lịch sử chấm công")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải lịch sử chấm công"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
         }
     }
 
-    suspend fun getMonthlySummary(month: Int? = null, year: Int? = null): Resource<MonthlyAttendanceSummaryDto> = withContext(Dispatchers.IO) {
+    suspend fun getMonthlySummary(
+        month: Int? = null,
+        year: Int? = null,
+        employeeId: Int? = null,
+        search: String? = null
+    ): Resource<MonthlyAttendanceSummaryDto> = withContext(Dispatchers.IO) {
         try {
-            val response = apiService.getMonthlyAttendanceSummary(pageIndex = 1, pageSize = 20, month = month, year = year)
+            val response = apiService.getMonthlyAttendanceSummary(
+                pageIndex = 1,
+                pageSize = 20,
+                month = month,
+                year = year,
+                search = search
+            )
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 val list = response.body()!!.data!!.items
-                val item = list.firstOrNull() ?: MonthlyAttendanceSummaryDto(
-                    month = month ?: 11,
-                    year = year ?: 2026
-                )
-                Resource.Success(item)
+                val matched = if (employeeId != null) {
+                    list.firstOrNull { it.employeeId == employeeId }
+                } else {
+                    list.firstOrNull()
+                }
+                if (matched != null) {
+                    Resource.Success(matched)
+                } else {
+                    Resource.Error("Chưa có dữ liệu bảng công tháng ${month ?: ""}/${year ?: ""}")
+                }
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải bảng công tháng")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải bảng công tháng"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -106,7 +124,7 @@ class AttendanceRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!)
             } else {
-                Resource.Error(response.body()?.message ?: "Gửi giải trình thất bại")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Gửi giải trình thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
@@ -122,7 +140,44 @@ class AttendanceRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
                 Resource.Success(response.body()!!.data!!.items)
             } else {
-                Resource.Error(response.body()?.message ?: "Lỗi tải danh sách giải trình")
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Lỗi tải danh sách giải trình"))
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
+        }
+    }
+
+    suspend fun deleteLateEarlyRequest(
+        employeeId: Int,
+        fromDate: String,
+        type: Boolean
+    ): Resource<Boolean> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.deleteLateEarlyRequest(employeeId, fromDate, type)
+            if (response.isSuccessful && response.body()?.success == true) {
+                Resource.Success(true)
+            } else {
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Xóa đơn giải trình thất bại"))
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")
+        }
+    }
+
+    suspend fun approveLateEarlyRequest(
+        employeeId: Int,
+        fromDate: String,
+        type: Boolean,
+        adminNote: String? = null
+    ): Resource<RegisterLateEarlyDto> = withContext(Dispatchers.IO) {
+        try {
+            val response = apiService.approveLateEarlyRequest(
+                ApproveLateEarlyRequestDto(employeeId, fromDate, type, adminNote)
+            )
+            if (response.isSuccessful && response.body()?.success == true && response.body()?.data != null) {
+                Resource.Success(response.body()!!.data!!)
+            } else {
+                Resource.Error(ApiErrorParser.extractErrorMessage(response, "Phê duyệt đơn giải trình thất bại"))
             }
         } catch (e: Exception) {
             Resource.Error(e.localizedMessage ?: "Lỗi kết nối máy chủ")

@@ -7,6 +7,8 @@ import com.example.baseproject.R
 import com.example.baseproject.base.activity.BaseActivity
 import com.example.baseproject.data.repositories.AttendanceRepository
 import com.example.baseproject.databinding.ActivityCreateExplanationBinding
+import com.example.baseproject.utils.DialogTone
+import com.example.baseproject.utils.ModernDialogHelper
 import com.example.baseproject.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -50,8 +52,32 @@ class CreateExplanationActivity : BaseActivity<ActivityCreateExplanationBinding>
         }
 
         viewBinding.btnSubmit.setOnClickListener {
-            submitExplanation()
+            confirmAndSubmitExplanation()
         }
+    }
+
+    private fun confirmAndSubmitExplanation() {
+        val workingDay = viewBinding.etWorkingDay.text.toString().trim()
+        val reason = viewBinding.etReason.text.toString().trim()
+        if (reason.isEmpty()) {
+            showToast("Vui lòng nhập lý do giải trình chi tiết")
+            return
+        }
+        val typeLabel = when (viewBinding.rgExplanationType.checkedRadioButtonId) {
+            R.id.rbEarly -> "Về sớm"
+            R.id.rbForgot -> "Quên quẹt thẻ"
+            else -> "Đi muộn"
+        }
+        ModernDialogHelper.showConfirm(
+            context = this,
+            title = "Xác nhận gửi giải trình",
+            message = "Bạn có chắc chắn muốn gửi đơn giải trình ($typeLabel) cho ngày $workingDay không?",
+            positiveText = getString(R.string.confirm),
+            negativeText = getString(R.string.cancel),
+            tone = DialogTone.PRIMARY,
+            iconRes = R.drawable.ic_checked,
+            onPositive = { submitExplanation() }
+        )
     }
 
     private fun submitExplanation() {
@@ -63,13 +89,17 @@ class CreateExplanationActivity : BaseActivity<ActivityCreateExplanationBinding>
             return
         }
 
-        val isEarly = (viewBinding.rgExplanationType.checkedRadioButtonId == R.id.rbEarly)
+        val checkedId = viewBinding.rgExplanationType.checkedRadioButtonId
+        val isEarly = (checkedId == R.id.rbEarly)
+        val isForgot = (checkedId == R.id.rbForgot)
+        val finalReason = if (isForgot) "[Quên quẹt thẻ] $reason" else reason
+        val minutes = if (isForgot) 0 else 30
 
         viewBinding.btnSubmit.isEnabled = false
         viewBinding.btnSubmit.text = "ĐANG GỬI..."
 
         lifecycleScope.launch {
-            when (val res = attendanceRepository.explainLateEarly(fromDate = workingDay, reason = reason, isEarly = isEarly, minutes = 30)) {
+            when (val res = attendanceRepository.explainLateEarly(fromDate = workingDay, reason = finalReason, isEarly = isEarly, minutes = minutes)) {
                 is Resource.Success -> {
                     Toast.makeText(this@CreateExplanationActivity, "Gửi đơn giải trình thành công!", Toast.LENGTH_LONG).show()
                     finish()

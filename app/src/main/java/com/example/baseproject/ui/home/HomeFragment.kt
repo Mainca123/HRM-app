@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,9 @@ import com.example.baseproject.ui.management.ApprovalActivity
 import com.example.baseproject.ui.management.DepartmentStatsActivity
 import com.example.baseproject.ui.requests.LeaveRequestAdapter
 import com.example.baseproject.ui.timesheet.TimesheetActivity
+import com.example.baseproject.utils.DialogTone
+import com.example.baseproject.utils.LocationHelper
+import com.example.baseproject.utils.ModernDialogHelper
 import com.example.baseproject.utils.RoleHelper
 import com.example.baseproject.utils.RoleType
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,10 +47,29 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private val viewModel: HomeViewModel by viewModels()
     private val leaveAdapter = LeaveRequestAdapter()
+    private var isCapturingLocation = false
+    private var confirmDialog: AlertDialog? = null
 
     private val clockHandler = Handler(Looper.getMainLooper())
     private val clockFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-    private val dateFormat = SimpleDateFormat("EEEE, dd/MM/yyyy", Locale("vi", "VN"))
+    private val dateFormat: SimpleDateFormat
+        get() = SimpleDateFormat("EEEE, dd/MM/yyyy", Locale.getDefault())
+
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            permissions[android.Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) {
+            captureLocationAndCheckInOut()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Cần cấp quyền vị trí (GPS) để ghi nhận địa điểm chấm công cho HR đối chiếu.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     private val clockRunnable = object : Runnable {
         override fun run() {
@@ -85,7 +108,32 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
 
         viewBinding.btnCheckInOut.setOnClickListener {
-            viewModel.handleCheckInOut()
+            if (isCapturingLocation || viewModel.uiState.value.isCheckingInOut || confirmDialog?.isShowing == true) {
+                return@setOnClickListener
+            }
+
+            val d = viewModel.uiState.value.dashboard
+            val hasCheckedIn = !d?.todayTimeIn.isNullOrBlank()
+            val hasCheckedOut = !d?.todayTimeOut.isNullOrBlank()
+            if (hasCheckedIn && hasCheckedOut) {
+                viewModel.handleCheckInOut()
+                return@setOnClickListener
+            }
+
+            val currentTime = clockFormat.format(Date())
+            val titleRes = if (!hasCheckedIn) R.string.confirm_check_in_title else R.string.confirm_check_out_title
+            val msgRes = if (!hasCheckedIn) R.string.confirm_check_in_message else R.string.confirm_check_out_message
+
+            confirmDialog = ModernDialogHelper.showConfirm(
+                context = requireContext(),
+                title = getString(titleRes),
+                message = getString(msgRes, currentTime),
+                positiveText = getString(R.string.confirm),
+                negativeText = getString(R.string.cancel),
+                tone = if (!hasCheckedIn) DialogTone.PRIMARY else DialogTone.WARNING,
+                iconRes = R.drawable.ic_checked,
+                onPositive = { proceedCheckInOutWithLocation() }
+            )
         }
 
         // Quick action 1: Xin nghỉ
@@ -149,7 +197,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         // User info from profile or dashboard
         val user = state.currentUser
         val fullName = state.dashboard?.employeeFullName?.ifBlank { null } ?: user?.fullName ?: "Nhân viên"
-        viewBinding.tvGreetingName.text = "Xin chào, $fullName"
+        viewBinding.tvGreetingName.text = getString(R.string.home_greeting_format, fullName)
 
         val empCode = user?.employeeCode ?: "NV${user?.employeeId ?: 1}"
         val dept = state.dashboard?.departmentName ?: "Phòng ban"
@@ -182,14 +230,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         }
 
         // CheckInOut Loading & State
-        if (state.isCheckingInOut) {
+        val isBusy = state.isCheckingInOut || isCapturingLocation
+        if (isBusy) {
             viewBinding.pbCheckInOut.visibility = View.VISIBLE
             viewBinding.tvCheckInOutText.visibility = View.INVISIBLE
             viewBinding.btnCheckInOut.isEnabled = false
+            viewBinding.btnCheckInOut.isClickable = false
+            viewBinding.btnCheckInOut.alpha = 0.7f
         } else {
             viewBinding.pbCheckInOut.visibility = View.GONE
             viewBinding.tvCheckInOutText.visibility = View.VISIBLE
             viewBinding.btnCheckInOut.isEnabled = true
+            viewBinding.btnCheckInOut.isClickable = true
+            viewBinding.btnCheckInOut.alpha = 1.0f
         }
 
         // Feedback messages
@@ -218,21 +271,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         val hasCheckedOut = !d.todayTimeOut.isNullOrBlank()
 
         if (!hasCheckedIn) {
-            viewBinding.tvCheckInOutText.text = "VÀO CA (CHECK-IN)"
-            viewBinding.btnCheckInOut.backgroundTintList = ColorStateList.valueOf(0xFF1E40AF.toInt())
+            viewBinding.tvCheckInOutText.text = getString(R.string.check_in_btn)
+            viewBinding.tvCheckInOutText.setTextColor(0xFF1E40AF.toInt())
+            viewBinding.pbCheckInOut.indeterminateTintList = ColorStateList.valueOf(0xFF1E40AF.toInt())
+            viewBinding.btnCheckInOut.backgroundTintList = ColorStateList.valueOf(0xFFFFFFFF.toInt())
         } else if (!hasCheckedOut) {
-            viewBinding.tvCheckInOutText.text = "TAN CA (CHECK-OUT)"
-            viewBinding.btnCheckInOut.backgroundTintList = ColorStateList.valueOf(0xFFB45309.toInt())
+            viewBinding.tvCheckInOutText.text = getString(R.string.check_out_btn)
+            viewBinding.tvCheckInOutText.setTextColor(0xFFFFFFFF.toInt())
+            viewBinding.pbCheckInOut.indeterminateTintList = ColorStateList.valueOf(0xFFFFFFFF.toInt())
+            viewBinding.btnCheckInOut.backgroundTintList = ColorStateList.valueOf(0xFFF59E0B.toInt())
         } else {
-            viewBinding.tvCheckInOutText.text = "ĐÃ HOÀN THÀNH CA LÀM"
-            viewBinding.btnCheckInOut.backgroundTintList = ColorStateList.valueOf(0xFF15803D.toInt())
+            viewBinding.tvCheckInOutText.text = getString(R.string.check_done_btn)
+            viewBinding.tvCheckInOutText.setTextColor(0xFFFFFFFF.toInt())
+            viewBinding.pbCheckInOut.indeterminateTintList = ColorStateList.valueOf(0xFFFFFFFF.toInt())
+            viewBinding.btnCheckInOut.backgroundTintList = ColorStateList.valueOf(0xFF10B981.toInt())
         }
 
         // Metrics
         viewBinding.tvWorkDays.text = "${d.workDaysThisMonth} / 22"
-        viewBinding.tvOvertimeHours.text = "${d.overtimeHoursThisMonth} giờ"
-        viewBinding.tvLeaveBalance.text = "${d.annualLeaveBalance} ngày"
-        viewBinding.tvLateMinutes.text = "${d.lateMinutesThisMonth} phút"
+        viewBinding.tvOvertimeHours.text = getString(R.string.unit_hours, d.overtimeHoursThisMonth.toString())
+        viewBinding.tvLeaveBalance.text = getString(R.string.unit_days, d.annualLeaveBalance.toString())
+        viewBinding.tvLateMinutes.text = getString(R.string.unit_minutes, d.lateMinutesThisMonth.toString())
 
         // Recent leave requests
         val requests = d.recentLeaveRequests
@@ -243,6 +302,39 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             viewBinding.rvRecentRequests.visibility = View.VISIBLE
             viewBinding.layoutEmptyRequests.visibility = View.GONE
             leaveAdapter.submitList(requests)
+        }
+    }
+
+    private fun proceedCheckInOutWithLocation() {
+        if (LocationHelper.hasLocationPermission(requireContext())) {
+            captureLocationAndCheckInOut()
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private fun captureLocationAndCheckInOut() {
+        if (isCapturingLocation) return
+        isCapturingLocation = true
+        viewBinding.btnCheckInOut.isEnabled = false
+        viewBinding.btnCheckInOut.isClickable = false
+        viewBinding.btnCheckInOut.alpha = 0.7f
+        viewBinding.pbCheckInOut.visibility = View.VISIBLE
+        viewBinding.tvCheckInOutText.visibility = View.INVISIBLE
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val captured = LocationHelper.captureCurrentLocation(requireContext())
+                if (!isAdded) return@launch
+                viewModel.handleCheckInOut(captured.toNote())
+            } finally {
+                isCapturingLocation = false
+            }
         }
     }
 
@@ -354,11 +446,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     private fun showFeatureDialog(title: String, message: String) {
-        AlertDialog.Builder(requireContext())
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("Đã hiểu", null)
-            .show()
+        ModernDialogHelper.showConfirm(
+            context = requireContext(),
+            title = title,
+            message = message,
+            positiveText = "Đã hiểu",
+            negativeText = null,
+            tone = DialogTone.PRIMARY,
+            iconRes = R.drawable.ic_grid
+        )
     }
 
     override fun onResume() {

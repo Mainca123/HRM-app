@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lịch sử chấm công"
+            android:text="@string/attendance_history_title"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -91,7 +91,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:paddingHorizontal="14dp"
-                android:text="Tất cả"
+                android:text="@string/filter_all"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -106,7 +106,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:paddingHorizontal="14dp"
-                android:text="Đúng giờ"
+                android:text="@string/filter_on_time"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -121,7 +121,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:paddingHorizontal="14dp"
-                android:text="Muộn/Sớm"
+                android:text="@string/filter_late_early"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -136,7 +136,7 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:paddingHorizontal="14dp"
-                android:text="Vắng"
+                android:text="@string/filter_absent"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:textStyle="bold" />
@@ -168,7 +168,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Không có dữ liệu chấm công"
+                android:text="@string/history_empty"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 android:visibility="gone" />

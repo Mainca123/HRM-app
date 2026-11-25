@@ -86,13 +86,24 @@ class AttendanceHistoryAdapter(
             val late = item.lateMinutes ?: 0
             val early = item.earlyMinutes ?: 0
 
+            val todayStr = inputDateFormat.format(java.util.Date())
+            val isToday = item.workingDay.take(10) == todayStr
+
             when {
                 !item.timeIn.isNullOrBlank() && item.timeOut.isNullOrBlank() -> {
-                    // Đang làm
-                    binding.tvStatusBadge.text = "Đang làm"
-                    binding.tvStatusBadge.backgroundTintList = ColorStateList.valueOf(0xFFEFF6FF.toInt())
-                    binding.tvStatusBadge.setTextColor(0xFF2563EB.toInt())
-                    binding.tvWorkingHours.text = "Hôm nay"
+                    if (isToday) {
+                        // Đang làm
+                        binding.tvStatusBadge.text = "Đang làm"
+                        binding.tvStatusBadge.backgroundTintList = ColorStateList.valueOf(0xFFEFF6FF.toInt())
+                        binding.tvStatusBadge.setTextColor(0xFF2563EB.toInt())
+                        binding.tvWorkingHours.text = "Hôm nay"
+                    } else {
+                        // Quên tan ca từ ngày trước
+                        binding.tvStatusBadge.text = "Thiếu giờ ra"
+                        binding.tvStatusBadge.backgroundTintList = ColorStateList.valueOf(0xFFFEE2E2.toInt())
+                        binding.tvStatusBadge.setTextColor(0xFFDC2626.toInt())
+                        binding.tvWorkingHours.text = "0h"
+                    }
                 }
                 item.timeIn.isNullOrBlank() && item.timeOut.isNullOrBlank() -> {
                     // Vắng mặt
