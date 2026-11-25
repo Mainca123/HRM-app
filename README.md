@@ -1,78 +1,110 @@
 # HRM App - Ứng Dụng Chấm Công & Quản Lý Nhân Sự Android
 
-Ứng dụng di động Chấm công và Quản lý nhân sự (HRM), phát triển trên nền tảng Android (Kotlin MVVM, Jetpack, Hilt, Retrofit, Coroutines).
+Ứng dụng di động Chấm công và Quản lý nhân sự (HRM), phát triển trên nền tảng Android với kiến trúc **Clean Architecture + MVVM** (Kotlin, Hilt DI, Retrofit, Coroutines/StateFlow, ViewBinding).
 
 ---
 
 ## 📲 Tải Về Ứng Dụng (Download APK)
 
-Người dùng và kiểm thử viên có thể tải trực tiếp file APK cài đặt phiên bản mới nhất tại đây:
+Người dùng và kiểm thử viên có thể tải trực tiếp file APK phiên bản mới nhất tại đây:
 
-[![Download APK](https://img.shields.io/badge/Download-HRM__App__v1.0.apk-2563EB?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Mainca123/HRM-app/releases/download/v1.0.0/HRM_App_v1.0.apk)
+[![Download APK](https://img.shields.io/badge/Download-HRM__App__v1.0.apk-2563EB?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Mainca123/HRM-app/raw/main/HRM_App_v1.0.apk)
 
-- 🔗 **Link tải trực tiếp:** [Tải xuống HRM_App_v1.0.apk](https://github.com/Mainca123/HRM-app/releases/download/v1.0.0/HRM_App_v1.0.apk)
-- 📦 **Trang phiên bản Release:** [GitHub Releases v1.0.0](https://github.com/Mainca123/HRM-app/releases/tag/v1.0.0)
-- 📌 **Phiên bản:** `v1.0.0` (Build debug)
+- 🔗 **Link tải trực tiếp (mới nhất trên `main`):** [Tải xuống HRM_App_v1.0.apk](https://github.com/Mainca123/HRM-app/raw/main/HRM_App_v1.0.apk)
+- 📦 **Trang phát hành (Releases):** [GitHub Releases](https://github.com/Mainca123/HRM-app/releases)
+- 📌 **Phiên bản:** `v1.0.0` (Debug build)
 - 📱 **Hỗ trợ:** Android 7.0 (API 24) trở lên
 
 ---
 
 ## ✨ Tính năng Nổi bật
-- **Chấm công thông minh:** Điểm danh ca làm việc, hỗ trợ nhận diện khuôn mặt / vị trí.
-- **Lịch sử công:** Xem chi tiết thời gian check-in / check-out, ca làm việc, số giờ làm, số phút đi muộn/về sớm theo từng tháng.
-- **Quản lý đơn từ:** Đăng ký nghỉ phép, làm thêm giờ (OT), và gửi đơn giải trình đi muộn/về sớm.
-- **Duyệt đơn quản lý:** Phê duyệt / Từ chối đơn từ cấp dưới trực tiếp trên app.
-- **Đa ngôn ngữ:** Hỗ trợ song ngữ Tiếng Việt & English mượt mà.
+- **Chấm công GPS thông minh:** Check-in / Check-out trực tiếp kèm tọa độ GPS, hộp thoại xác nhận chống bấm nhầm và khóa trạng thái sau khi hoàn thành ca.
+- **Lịch sử & Bảng công tháng:** Theo dõi chi tiết giờ vào/ra, trạng thái đi muộn/về sớm/thiếu giờ ra, số công chuẩn, giờ tăng ca và quỹ phép năm.
+- **Quản lý đơn từ:** Tạo mới, chỉnh sửa, hủy/xóa đơn **Nghỉ phép**, **Tăng ca (OT)** và **Giải trình đi muộn/về sớm**.
+- **Quản lý & Phê duyệt (Manager / HR / Admin):** Xem thống kê chuyên cần theo phòng ban và phê duyệt / từ chối đơn từ cấp dưới ngay trên ứng dụng.
+- **Tài khoản & Đa ngôn ngữ:** Xem hồ sơ cá nhân, đổi mật khẩu (có xác nhận & ẩn/hiện mật khẩu), chuyển đổi mượt mà giữa **Tiếng Việt** và **English**.
 
 ---
 
-## 📁 Cấu trúc Thư mục Dự án
+## 📁 Kiến trúc & Cấu trúc Thư mục (Clean Architecture + MVVM)
 
 ```text
 com.example.baseproject/
+├── App.kt                              # Application class (Hilt entry point & khởi tạo locale)
 │
-├── App.kt                      # Application class (khởi tạo toàn cục)
+├── core/                               # Tầng dùng chung toàn ứng dụng
+│   ├── base/                           # BaseActivity, BaseFragment, BaseViewModel, BaseAdapter, BaseDialog, SingleLiveEvent
+│   ├── common/                         # ApiErrorParser, Constant, Logger, Resource, Utils
+│   ├── extensions/                     # ContextExt, ViewExt
+│   ├── helper/                         # LocaleHelper, LocationHelper, ModernDialogHelper, RoleHelper
+│   └── storage/                        # SpManager (SharedPreferences / JWT Token)
 │
-├── base/                       # Các lớp cơ sở dùng chung
-│   ├── activity/               # BaseActivity (ViewBinding, Toast, BackPress)
-│   ├── adapter/                # BaseAdapter (generic RecyclerView adapter)
-│   ├── dialog/                 # BaseDialog
-│   ├── fragment/               # BaseFragment
-│   └── viewmodel/              # BaseViewModel & SingleLiveEvent
+├── di/                                 # Hilt Dependency Injection Modules
+│   ├── AppModule.kt                    # SharedPreferences, SpManager
+│   └── NetworkModule.kt                # OkHttpClient, Custom DNS, Retrofit, ApiService
 │
-├── ui/                         # Các màn hình tính năng (Flow: Splash -> Language -> OBD -> Login -> Register -> Main)
-│   ├── splash/
-│   ├── language/
-│   ├── onboarding/
-│   ├── login/
-│   ├── register/
-│   ├── main/
-│   └── theme/
+├── data/                               # Tầng Dữ liệu (Remote API + Local + Repository)
+│   ├── local/                          # LocalDataSource (dữ liệu ngôn ngữ & onboarding)
+│   ├── remote/
+│   │   ├── api/                        # ApiService (Retrofit endpoints)
+│   │   ├── interceptor/                # AuthInterceptor (tự động gắn Bearer JWT Token)
+│   │   └── dto/                        # attendance, auth, common, dashboard, employee, leave, overtime
+│   └── repository/                     # AttendanceRepository, AuthRepository, DashboardRepository,
+│                                       # LeaveRepository, LocalRepository, OvertimeRepository
 │
-├── data/                       # Tầng dữ liệu (API, Repository, Database, Models)
-├── navigation/                 # Điều hướng (Navigation graphs)
-├── di/                         # Hilt Dependency Injection modules
-└── utils/                      # Tiện ích (Constant, Ext, LocaleHelper, Logger, SpManager, Utils)
+├── domain/                             # Tầng Nghiệp vụ
+│   ├── model/                          # Language, OnBoarding
+│   └── usecase/                        # UseCase, GetListLanguageUseCase, GetListOnBoardingUseCase
+│
+└── presentation/                       # Tầng Giao diện (UI gom theo từng Feature)
+    ├── common/                         # LoadingDialog
+    ├── splash/                         # SplashActivity, SplashViewModel
+    ├── language/                       # LanguageActivity, LanguageAdapter, LanguageViewModel
+    ├── onboarding/                     # OnboardingActivity, OnBoardingAdapter, OnboardingViewModel
+    ├── auth/
+    │   ├── login/                      # LoginActivity, LoginViewModel
+    │   └── register/                   # RegisterActivity, RegisterViewModel
+    ├── main/                           # MainActivity, MainViewModel (Bottom Navigation)
+    ├── home/                           # HomeFragment, HomeViewModel (Chấm công GPS & tổng quan)
+    ├── attendance/
+    │   ├── history/                    # HistoryFragment, HistoryViewModel, AttendanceHistoryAdapter
+    │   └── timesheet/                  # TimesheetActivity (Bảng công & quỹ phép tháng)
+    ├── requests/
+    │   ├── RequestsFragment.kt         # Danh sách đơn từ cá nhân
+    │   ├── RequestsViewModel.kt
+    │   ├── adapter/                    # LeaveRequestAdapter, OvertimeAdapter, ExplanationRequestAdapter
+    │   └── form/                       # CreateLeaveActivity, CreateOvertimeActivity, CreateExplanationActivity
+    ├── management/                     # ApprovalActivity, ApprovalAdapter, DepartmentStatsActivity
+    └── profile/                        # ProfileFragment, ProfileViewModel
 ```
 
 ---
 
-## 🚀 Hướng dẫn Sử dụng (Guide)
+## 🛠 Công nghệ Sử dụng
+- **Ngôn ngữ:** Kotlin
+- **Kiến trúc:** Clean Architecture + MVVM (StateFlow / LiveData + ViewBinding)
+- **Dependency Injection:** Dagger Hilt
+- **Networking:** Retrofit 2, OkHttp 3, Gson
+- **Async:** Kotlin Coroutines
+- **Testing:** JUnit 4 (`HrmCoreUnitTest`)
 
-### 1. Dành cho phát triển bằng Kotlin XML (MVVM)
-- **Base Activity/Fragment:** Kế thừa từ `BaseActivity<VB>` hoặc `BaseFragment<VB>`. Cung cấp sẵn hàm `viewBinding` và `showToast(...)`.
-- **ViewModel:** Kế thừa từ `BaseViewModel` để quản lý sự kiện loading tự động.
-- **Adapter:** Sử dụng `BaseAdapter` cho RecyclerView để tối ưu hóa code danh sách.
+---
 
-### 2. Dành cho mở rộng sang Kotlin Jetpack Compose
-- Dự án đã được cấu hình sẵn **Jetpack Compose BOM & Compose Plugin** trong [`build.gradle.kts`](file:///D:/App_cham_cong/BaseProject/app/build.gradle.kts) (`compose = true`).
-- Bạn có thể viết các Composable functions trực tiếp trong các package UI hoặc tạo Activity mới sử dụng `setContent { ... }`.
+## 🚀 Hướng dẫn Build & Kiểm thử
+
+```bash
+# Chạy toàn bộ Unit Test
+./gradlew testDebugUnitTest
+
+# Build file APK Debug
+./gradlew assembleDebug
+```
 
 ---
 
 ## 🔄 Luồng Khởi động Ứng dụng (App Flow)
-1. **SplashActivity**: Kiểm tra trạng thái khởi động, chuyển đến `LanguageActivity`.
-2. **LanguageActivity**: Chọn ngôn ngữ ứng dụng (`LocaleHelper`).
-3. **OnboardingActivity**: Giới thiệu tính năng qua các bước.
-4. **LoginActivity / RegisterActivity**: Đăng nhập / Đăng ký (Sẵn sàng tích hợp API Java Spring / ASP.NET).
-5. **MainActivity**: Màn hình chính sau khi đăng nhập thành công.
+1. **SplashActivity**: Kiểm tra trạng thái đăng nhập / ngôn ngữ đã lưu.
+2. **LanguageActivity**: Chọn ngôn ngữ hiển thị (`LocaleHelper`).
+3. **OnboardingActivity**: Giới thiệu nhanh các tính năng chính cho lần mở đầu tiên.
+4. **LoginActivity / RegisterActivity**: Đăng nhập bằng tài khoản nhân sự kết nối Backend ASP.NET Core (`https://hrm-tmyj.onrender.com`).
+5. **MainActivity**: Điều hướng 4 tab chính — **Trang chủ (Chấm công)**, **Lịch sử**, **Đơn từ**, **Cá nhân**.
